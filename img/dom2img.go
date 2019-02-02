@@ -68,6 +68,9 @@ func DrawChildren(dst *image.RGBA, parent *dom.Dom, pStyle *dom.TagStyle, childr
 
 		lineHeight := getIntPx(pStyle.LineHeight, parent.CalcHeight)
 
+		drawCursor.OffsetY += marginTop
+		drawCursor.OffsetX += marginLeft
+
 		if d.DomType == dom.DOM_TYPE_ELEMENT {
 			switch d.TagName {
 			case "img":
@@ -84,11 +87,12 @@ func DrawChildren(dst *image.RGBA, parent *dom.Dom, pStyle *dom.TagStyle, childr
 					img = resize.Resize(uint(width), uint(height), img, resize.Lanczos3)
 				}
 
-				draw.Draw(dst, dst.Bounds().Add(image.Pt(drawCursor.OffsetX+marginLeft, drawCursor.OffsetY+marginTop)), img, image.ZP, draw.Over)
-				drawCursor.OffsetY += height + marginTop + marginBottom
+				draw.Draw(dst, dst.Bounds().Add(image.Pt(drawCursor.OffsetX, drawCursor.OffsetY)), img, image.ZP, draw.Over)
+				drawCursor.OffsetY += height + marginBottom
 			case "hr":
-				drawCursor.OffsetY = drawCursor.OffsetY + marginTop
+				drawCursor.OffsetY += height + marginBottom
 			case "div":
+
 			case "span":
 			default:
 
@@ -96,6 +100,7 @@ func DrawChildren(dst *image.RGBA, parent *dom.Dom, pStyle *dom.TagStyle, childr
 			drawCursor.OffsetX = drawCursor.OffsetX + marginLeft
 			drawCursor.EndX = drawCursor.EndX - marginRight
 			DrawChildren(dst, d, calcStyle, d.Children, drawCursor)
+			drawCursor.OffsetY += marginTop
 		} else if d.DomType == dom.DOM_TYPE_TEXT {
 			f, exist := dom.FontMapping[calcStyle.FontFamily]
 			if !exist {
@@ -107,7 +112,12 @@ func DrawChildren(dst *image.RGBA, parent *dom.Dom, pStyle *dom.TagStyle, childr
 			if fontSize > lh {
 				lh = fontSize
 			}
-			drawCursor.OffsetY += fontSize
+			if parent.TagName == "span" {
+				txtLen := float64(CalStrLen(d.TagData.(string)) * float64(fontSize) / 3)
+				drawCursor.OffsetX += int(txtLen) + marginLeft
+			} else {
+				drawCursor.OffsetY += lh
+			}
 		} else {
 			// Comments or other document type
 		}
@@ -213,4 +223,18 @@ func getInheritStyle(pStyle *dom.TagStyle, curStyle *dom.TagStyle) *dom.TagStyle
 		curStyle.FontFamily = pStyle.FontFamily
 	}
 	return curStyle
+}
+
+func CalStrLen(str string) float64 {
+	sl := 0.0
+	rs := []rune(str)
+	for _, r := range rs {
+		rint := int(r)
+		if rint < 128 {
+			sl += 1.7
+		} else {
+			sl += 3
+		}
+	}
+	return sl
 }
