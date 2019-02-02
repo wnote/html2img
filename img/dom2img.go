@@ -22,11 +22,11 @@ type DrawCursor struct {
 	OffsetX int
 	OffsetY int
 
-	ParentX int
-	ParentY int
+	FromX int
+	EndX  int
 
-	EndY int
-	EndX int
+	FromY int
+	EndY  int
 
 	NeedNewLine bool
 }
@@ -58,6 +58,15 @@ func BodyDom2Img(bodyDom *dom.Dom) ([]byte, error) {
 func DrawChildren(dst *image.RGBA, parent *dom.Dom, pStyle *dom.TagStyle, children []*dom.Dom, drawCursor *DrawCursor) {
 	for _, d := range children {
 		calcStyle := getInheritStyle(pStyle, d.TagStyle)
+		width := getIntPx(calcStyle.Width, parent.CalcWidth)
+		height := getIntPx(calcStyle.Height, parent.CalcHeight)
+
+		marginTop := getIntPx(calcStyle.MarginTop, parent.CalcHeight)
+		marginBottom := getIntPx(calcStyle.MarginBottom, parent.CalcHeight)
+		marginLeft := getIntPx(calcStyle.MarginLeft, parent.CalcWidth)
+		marginRight := getIntPx(calcStyle.MarginRight, parent.CalcWidth)
+
+		lineHeight := getIntPx(pStyle.LineHeight, parent.CalcHeight)
 
 		if d.DomType == dom.DOM_TYPE_ELEMENT {
 			switch d.TagName {
@@ -65,31 +74,27 @@ func DrawChildren(dst *image.RGBA, parent *dom.Dom, pStyle *dom.TagStyle, childr
 				imgData := d.TagData.(dom.ImageData)
 				img := imgData.Img
 				srcBounds := img.Bounds()
-				var imageWidth, imageHeight int
-				imageWidth = getIntPx(d.TagStyle.Width, parent.CalcWidth)
-				imageHeight = getIntPx(d.TagStyle.Height, parent.CalcHeight)
-
-				if imageHeight > 0 || imageWidth > 0 {
-					if imageHeight == 0 {
-						imageHeight = imageWidth * srcBounds.Dy() / srcBounds.Dx()
+				if height > 0 || width > 0 {
+					if height == 0 {
+						height = width * srcBounds.Dy() / srcBounds.Dx()
 					}
-					if imageWidth == 0 {
-						imageWidth = imageHeight * srcBounds.Dx() / srcBounds.Dy()
+					if width == 0 {
+						width = height * srcBounds.Dx() / srcBounds.Dy()
 					}
-					img = resize.Resize(uint(imageWidth), uint(imageHeight), img, resize.Lanczos3)
+					img = resize.Resize(uint(width), uint(height), img, resize.Lanczos3)
 				}
-				marginTop := getIntPx(d.TagStyle.MarginTop, parent.CalcHeight)
-				marginLeft := getIntPx(d.TagStyle.MarginLeft, parent.CalcWidth)
 
 				draw.Draw(dst, dst.Bounds().Add(image.Pt(drawCursor.OffsetX+marginLeft, drawCursor.OffsetY+marginTop)), img, image.ZP, draw.Over)
-				drawCursor.OffsetY += imageHeight + marginTop
+				drawCursor.OffsetY += height + marginTop + marginBottom
 			case "hr":
-
+				drawCursor.OffsetY = drawCursor.OffsetY + marginTop
 			case "div":
 			case "span":
 			default:
 
 			}
+			drawCursor.OffsetX = drawCursor.OffsetX + marginLeft
+			drawCursor.EndX = drawCursor.EndX - marginRight
 			DrawChildren(dst, d, calcStyle, d.Children, drawCursor)
 		} else if d.DomType == dom.DOM_TYPE_TEXT {
 			f, exist := dom.FontMapping[calcStyle.FontFamily]
@@ -98,6 +103,10 @@ func DrawChildren(dst *image.RGBA, parent *dom.Dom, pStyle *dom.TagStyle, childr
 			}
 			fontSize := getIntPx(calcStyle.FontSize, 0)
 			AddText(f, float64(fontSize), 72, dst, image.NewUniform(color.RGBA{R: 0x44, G: 0x44, B: 0x44, A: 0xff}), d.TagData.(string), drawCursor.OffsetX, drawCursor.OffsetY+fontSize)
+			lh := lineHeight
+			if fontSize > lh {
+				lh = fontSize
+			}
 			drawCursor.OffsetY += fontSize
 		} else {
 			// Comments or other document type
