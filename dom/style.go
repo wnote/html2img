@@ -288,3 +288,25 @@ func getFontFromFile(fontfile string) (*truetype.Font, error) {
 	}
 	return f, nil
 }
+
+func GetInheritStyle(pStyle *TagStyle, curStyle *TagStyle) *TagStyle {
+	if pStyle == nil {
+		pStyle = &TagStyle{}
+	}
+	if curStyle == nil {
+		curStyle = &TagStyle{}
+	}
+	if curStyle.Color == "" && pStyle.Color != "" {
+		curStyle.Color = pStyle.Color
+	}
+	if curStyle.FontSize == "" && pStyle.FontSize != "" {
+		curStyle.FontSize = pStyle.FontSize
+	}
+	if curStyle.LineHeight == "" && pStyle.LineHeight != "" {
+		curStyle.LineHeight = pStyle.LineHeight
+	}
+	if curStyle.FontFamily == "" && pStyle.FontFamily != "" {
+		curStyle.FontFamily = pStyle.FontFamily
+	}
+	return curStyle
+}

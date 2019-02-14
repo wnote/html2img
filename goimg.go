@@ -10,7 +10,7 @@ import (
 	"golang.org/x/net/html"
 )
 
-func ParseHtml(htmlPath string) ([]byte, error) {
+func Html2Img(htmlPath string) ([]byte, error) {
 	htmlBytes, err := ioutil.ReadFile(htmlPath)
 	if err != nil {
 		log.Fatal(err)
@@ -29,14 +29,7 @@ func ParseHtml(htmlPath string) ([]byte, error) {
 	}
 	tagStyleList := dom.ParseStyle(styleString)
 
-	parsedBodyDom := dom.GetHtmlDom(body, tagStyleList, nil)
-
-	/* jsonStr, err := json.Marshal(parsedBodyDom)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println(string(jsonStr)) */
+	parsedBodyDom := dom.GetHtmlDom(body, tagStyleList)
 
 	return img.BodyDom2Img(parsedBodyDom)
 }
