@@ -57,19 +57,11 @@ func DrawChildren(dst *image.RGBA, parent *dom.Dom, pStyle *dom.TagStyle, childr
 				imgData := d.TagData.(dom.ImageData)
 				draw.Draw(dst, dst.Bounds().Add(image.Pt(d.Inner.X1, d.Inner.Y1)), imgData.Img, image.ZP, draw.Over)
 			case "hr":
-				col := calcStyle.BackgroundColor
-				if col == "" {
-					col = "#000000"
+				if calcStyle.BackgroundColor == "" {
+					calcStyle.BackgroundColor = "#000000"
 				}
-				borderColor := utils.GetColor(col)
-				for y := d.Inner.Y1; y <= d.Inner.Y2; y++ {
-					for x := d.Inner.X1; x <= d.Inner.X2; x++ {
-						dst.Set(x, y, borderColor)
-					}
-				}
-			case "div":
-
-			case "span":
+				fallthrough
+			default:
 				if calcStyle.BackgroundColor != "" {
 					borderColor := utils.GetColor(calcStyle.BackgroundColor)
 					for y := d.Inner.Y1; y <= d.Inner.Y2; y++ {
@@ -78,8 +70,6 @@ func DrawChildren(dst *image.RGBA, parent *dom.Dom, pStyle *dom.TagStyle, childr
 						}
 					}
 				}
-			default:
-
 			}
 			DrawChildren(dst, d, calcStyle, d.Children)
 		} else if d.DomType == dom.DOM_TYPE_TEXT {
