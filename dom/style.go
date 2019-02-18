@@ -46,6 +46,7 @@ type TagStyle struct {
 	Padding      Pos
 	BorderWidth  Pos
 	BorderColor  Pos
+	BorderStyle  Pos
 }
 
 // 暂时不考虑优先级问题
@@ -135,8 +136,6 @@ func SetTagStyle(tagStyle *TagStyle, cStyle string) {
 		tagStyle.Padding.Bottom = cssValue
 	case "display":
 		tagStyle.Display = cssValue
-	case "border-radius": //TODO
-		tagStyle.BorderRadius.Left = cssValue
 	case "line-height":
 		tagStyle.LineHeight = cssValue
 	case "font-family":
@@ -199,6 +198,89 @@ func SetTagStyle(tagStyle *TagStyle, cStyle string) {
 			tagStyle.Margin.Left = attrList[3]
 		default:
 			panic(fmt.Sprintf("unsupported margin value %v", cStyle))
+		}
+	case "border":
+		attrList := strings.Split(cssValue, " ")
+		if len(attrList) == 3 {
+			tagStyle.BorderWidth.Left = attrList[0]
+			tagStyle.BorderStyle.Left = attrList[1]
+			tagStyle.BorderColor.Left = attrList[2]
+
+			tagStyle.BorderWidth.Right = attrList[0]
+			tagStyle.BorderStyle.Right = attrList[1]
+			tagStyle.BorderColor.Right = attrList[2]
+
+			tagStyle.BorderWidth.Top = attrList[0]
+			tagStyle.BorderStyle.Top = attrList[1]
+			tagStyle.BorderColor.Top = attrList[2]
+
+			tagStyle.BorderWidth.Bottom = attrList[0]
+			tagStyle.BorderStyle.Bottom = attrList[1]
+			tagStyle.BorderColor.Bottom = attrList[2]
+		} else {
+			panic(fmt.Sprintf("unsupported border value %v", cStyle))
+		}
+	case "border-left":
+		attrList := strings.Split(cssValue, " ")
+		if len(attrList) == 3 {
+			tagStyle.BorderWidth.Left = attrList[0]
+			tagStyle.BorderStyle.Left = attrList[1]
+			tagStyle.BorderColor.Left = attrList[2]
+		} else {
+			panic(fmt.Sprintf("unsupported border-left value %v", cStyle))
+		}
+	case "border-right":
+		attrList := strings.Split(cssValue, " ")
+		if len(attrList) == 3 {
+			tagStyle.BorderWidth.Right = attrList[0]
+			tagStyle.BorderStyle.Right = attrList[1]
+			tagStyle.BorderColor.Right = attrList[2]
+		} else {
+			panic(fmt.Sprintf("unsupported border-right value %v", cStyle))
+		}
+	case "border-top":
+		attrList := strings.Split(cssValue, " ")
+		if len(attrList) == 3 {
+			tagStyle.BorderWidth.Top = attrList[0]
+			tagStyle.BorderStyle.Top = attrList[1]
+			tagStyle.BorderColor.Top = attrList[2]
+		} else {
+			panic(fmt.Sprintf("unsupported border-top value %v", cStyle))
+		}
+	case "border-bottom":
+		attrList := strings.Split(cssValue, " ")
+		if len(attrList) == 3 {
+			tagStyle.BorderWidth.Bottom = attrList[0]
+			tagStyle.BorderStyle.Bottom = attrList[1]
+			tagStyle.BorderColor.Bottom = attrList[2]
+		} else {
+			panic(fmt.Sprintf("unsupported border-bottom value %v", cStyle))
+		}
+	case "border-radius":
+		attrList := strings.Split(cssValue, " ")
+		switch len(attrList) {
+		case 1:
+			tagStyle.BorderRadius.Top = attrList[0]
+			tagStyle.BorderRadius.Bottom = attrList[0]
+			tagStyle.BorderRadius.Left = attrList[0]
+			tagStyle.BorderRadius.Right = attrList[0]
+		case 2:
+			tagStyle.BorderRadius.Top = attrList[0]
+			tagStyle.BorderRadius.Bottom = attrList[0]
+			tagStyle.BorderRadius.Left = attrList[1]
+			tagStyle.BorderRadius.Right = attrList[1]
+		case 3:
+			tagStyle.BorderRadius.Top = attrList[0]
+			tagStyle.BorderRadius.Left = attrList[1]
+			tagStyle.BorderRadius.Right = attrList[1]
+			tagStyle.BorderRadius.Bottom = attrList[2]
+		case 4:
+			tagStyle.BorderRadius.Top = attrList[0]
+			tagStyle.BorderRadius.Right = attrList[1]
+			tagStyle.BorderRadius.Bottom = attrList[2]
+			tagStyle.BorderRadius.Left = attrList[3]
+		default:
+			panic(fmt.Sprintf("unsupported border-radius value %v", cStyle))
 		}
 	default:
 		panic(fmt.Sprintf("unsupported %v", cStyle))

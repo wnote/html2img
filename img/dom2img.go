@@ -74,6 +74,73 @@ func DrawChildren(dst *image.RGBA, parent *dom.Dom, pStyle *dom.TagStyle, childr
 						}
 					}
 				}
+				if calcStyle.BorderStyle.Top != "" && calcStyle.BorderWidth.Top != "" && calcStyle.BorderColor.Top != "" {
+					borderWidth := utils.GetIntSize(calcStyle.BorderWidth.Top)
+					borderColor := utils.GetColor(calcStyle.BorderColor.Top)
+					switch calcStyle.BorderStyle.Top {
+					case "solid":
+						box := d.Container
+						for width := borderWidth - 1; width >= 0; width-- {
+							for x := box.X1; x <= box.X2; x++ {
+								dst.Set(x, d.Container.Y1+width, borderColor)
+							}
+						}
+					default:
+						panic("border-style " + calcStyle.BorderStyle.Top + " not support")
+
+					}
+				}
+
+				if calcStyle.BorderStyle.Bottom != "" && calcStyle.BorderWidth.Bottom != "" && calcStyle.BorderColor.Bottom != "" {
+					borderWidth := utils.GetIntSize(calcStyle.BorderWidth.Bottom)
+					borderColor := utils.GetColor(calcStyle.BorderColor.Bottom)
+					switch calcStyle.BorderStyle.Bottom {
+					case "solid":
+						box := d.Container
+						for width := borderWidth - 1; width >= 0; width-- {
+							for x := box.X1; x <= box.X2; x++ {
+								dst.Set(x, d.Container.Y2-width, borderColor)
+							}
+						}
+					default:
+						panic("border-style " + calcStyle.BorderStyle.Top + " not support")
+
+					}
+				}
+
+				if calcStyle.BorderStyle.Left != "" && calcStyle.BorderWidth.Left != "" && calcStyle.BorderColor.Left != "" {
+					borderWidth := utils.GetIntSize(calcStyle.BorderWidth.Left)
+					borderColor := utils.GetColor(calcStyle.BorderColor.Left)
+					switch calcStyle.BorderStyle.Left {
+					case "solid":
+						box := d.Container
+						for width := borderWidth - 1; width >= 0; width-- {
+							for y := box.Y1; y <= box.Y2; y++ {
+								dst.Set(d.Container.X1+width, y, borderColor)
+							}
+						}
+					default:
+						panic("border-style " + calcStyle.BorderStyle.Top + " not support")
+
+					}
+				}
+
+				if calcStyle.BorderStyle.Right != "" && calcStyle.BorderWidth.Right != "" && calcStyle.BorderColor.Right != "" {
+					borderWidth := utils.GetIntSize(calcStyle.BorderWidth.Right)
+					borderColor := utils.GetColor(calcStyle.BorderColor.Right)
+					switch calcStyle.BorderStyle.Right {
+					case "solid":
+						box := d.Container
+						for width := borderWidth - 1; width >= 0; width-- {
+							for y := box.Y1; y <= box.Y2; y++ {
+								dst.Set(d.Container.X2-width, y, borderColor)
+							}
+						}
+					default:
+						panic("border-style " + calcStyle.BorderStyle.Top + " not support")
+
+					}
+				}
 			}
 			DrawChildren(dst, d, calcStyle, d.Children)
 		} else if d.DomType == dom.DOM_TYPE_TEXT {

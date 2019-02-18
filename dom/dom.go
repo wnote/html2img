@@ -41,8 +41,8 @@ type Rectangle struct {
 type Dom struct {
 	Outer     Rectangle
 	Container Rectangle
+	Inwall    Rectangle
 	Inner     Rectangle
-	// Inwall Rectangle
 
 	DomType  int8
 	TagName  string
@@ -107,7 +107,6 @@ func GetChildren(htmlNode *html.Node, tagStyleList []*TagStyle, parents []*Dom) 
 	pX2 := parent.Inner.X2
 	pWidth := pX2 - pX1 + 1
 	var endOffset EndOffset
-
 CHILDREN:
 	for ch := htmlNode.FirstChild; ch != nil; {
 		if ch.Type != html.ElementNode && ch.Type != html.TextNode {
@@ -273,8 +272,19 @@ CHILDREN:
 				var child []*Dom
 				child, endOffset = GetChildren(ch, tagStyleList, par)
 				dom.Children = child
-				dom.Inner.Y2 = endOffset.Y2
-				dom.Container.Y2 = endOffset.Y2
+				if len(child) == 0 {
+					dom.Inner.Y2 = endOffset.Y2
+					dom.Container.Y2 = endOffset.Y2
+				} else {
+					dom.Inner.Y2 = dom.Inner.Y1
+					if domStyle.Height != "" {
+						dom.Inner.Y2 += utils.GetIntSize(domStyle.Height) - 1
+					}
+					dom.Container.Y2 = dom.Inner.Y2
+				}
+				fmt.Printf("%v ", dom.Inner)
+				fmt.Printf("%v %v", endOffset.X2, endOffset.Y2)
+
 				if domStyle.Padding.Bottom != "" {
 					dom.Container.Y2 += utils.GetIntSize(domStyle.Padding.Bottom)
 				}
@@ -286,6 +296,7 @@ CHILDREN:
 				endOffset.Y2 = dom.Outer.Y2
 				endOffset.X2 = dom.Outer.X2
 				pY1 = dom.Outer.Y2 + 1
+				fmt.Printf("%v %v=%v %v\n", ch.Data, ch.Attr[0].Key, ch.Attr[0].Val, pY1)
 			}
 		}
 		children = append(children, dom)
@@ -349,6 +360,9 @@ func GetDomStyle(dom *Dom, tagStyleList []*TagStyle) *TagStyle {
 			finalStyle.Margin = getSelectedPos(finalStyle.Margin, style.Margin)
 			finalStyle.Padding = getSelectedPos(finalStyle.Padding, style.Padding)
 			finalStyle.BorderRadius = getSelectedPos(finalStyle.BorderRadius, style.BorderRadius)
+			finalStyle.BorderWidth = getSelectedPos(finalStyle.BorderWidth, style.BorderWidth)
+			finalStyle.BorderColor = getSelectedPos(finalStyle.BorderColor, style.BorderColor)
+			finalStyle.BorderStyle = getSelectedPos(finalStyle.BorderStyle, style.BorderStyle)
 		}
 	}
 
