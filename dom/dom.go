@@ -77,14 +77,14 @@ func GetHtmlDom(htmlNode *html.Node, tagStyleList []*TagStyle) *Dom {
 	bodyDom.Container.X2 = bodyWidth
 	bodyDom.Inner.X2 = bodyWidth
 
-	if domStyle.PaddingLeft != "" {
-		bodyDom.Inner.X1 += utils.GetIntSize(domStyle.PaddingLeft)
+	if domStyle.Padding.Left != "" {
+		bodyDom.Inner.X1 += utils.GetIntSize(domStyle.Padding.Left)
 	}
-	if domStyle.PaddingTop != "" {
-		bodyDom.Inner.Y1 += utils.GetIntSize(domStyle.PaddingTop)
+	if domStyle.Padding.Top != "" {
+		bodyDom.Inner.Y1 += utils.GetIntSize(domStyle.Padding.Top)
 	}
-	if domStyle.PaddingRight != "" {
-		bodyDom.Inner.X2 -= utils.GetIntSize(domStyle.PaddingRight)
+	if domStyle.Padding.Right != "" {
+		bodyDom.Inner.X2 -= utils.GetIntSize(domStyle.Padding.Right)
 	}
 
 	bodyDom.TagStyle = domStyle
@@ -92,8 +92,8 @@ func GetHtmlDom(htmlNode *html.Node, tagStyleList []*TagStyle) *Dom {
 	bodyDom.Children = children
 	bodyDom.Inner.Y2 = endOffset.Y2
 	bodyDom.Container.Y2 = endOffset.Y2
-	if domStyle.PaddingBottom != "" {
-		bodyDom.Inner.Y2 += utils.GetIntSize(domStyle.PaddingBottom)
+	if domStyle.Padding.Bottom != "" {
+		bodyDom.Inner.Y2 += utils.GetIntSize(domStyle.Padding.Bottom)
 	}
 	bodyDom.Outer = bodyDom.Container
 	return bodyDom
@@ -136,20 +136,20 @@ CHILDREN:
 		dom.Container.X1 = dom.Outer.X1
 		dom.Outer.Y1 = pY1
 		dom.Container.Y1 = pY1
-		if domStyle.MarginLeft != "" {
-			dom.Container.X1 += utils.GetIntSize(domStyle.MarginLeft)
+		if domStyle.Margin.Left != "" {
+			dom.Container.X1 += utils.GetIntSize(domStyle.Margin.Left)
 		}
-		if domStyle.MarginTop != "" {
-			dom.Container.Y1 += utils.GetIntSize(domStyle.MarginTop)
+		if domStyle.Margin.Top != "" {
+			dom.Container.Y1 += utils.GetIntSize(domStyle.Margin.Top)
 		}
 
 		dom.Inner.X1 = dom.Container.X1
 		dom.Inner.Y1 = dom.Container.Y1
-		if domStyle.PaddingLeft != "" {
-			dom.Inner.X1 += utils.GetIntSize(domStyle.PaddingLeft)
+		if domStyle.Padding.Left != "" {
+			dom.Inner.X1 += utils.GetIntSize(domStyle.Padding.Left)
 		}
-		if domStyle.PaddingTop != "" {
-			dom.Inner.Y1 += utils.GetIntSize(domStyle.PaddingTop)
+		if domStyle.Padding.Top != "" {
+			dom.Inner.Y1 += utils.GetIntSize(domStyle.Padding.Top)
 		}
 		switch ch.Data {
 		case "img":
@@ -177,11 +177,11 @@ CHILDREN:
 
 			dom.Inner.X2 = dom.Inner.X1 + width - 1
 			dom.Inner.Y2 = dom.Inner.Y1 + height - 1
-			if domStyle.MarginRight != "" {
-				dom.Outer.X2 = dom.Inner.X2 + utils.GetIntSize(domStyle.MarginRight)
+			if domStyle.Margin.Right != "" {
+				dom.Outer.X2 = dom.Inner.X2 + utils.GetIntSize(domStyle.Margin.Right)
 			}
-			if domStyle.MarginBottom != "" {
-				dom.Outer.Y2 = dom.Inner.Y2 + utils.GetIntSize(domStyle.MarginBottom)
+			if domStyle.Margin.Bottom != "" {
+				dom.Outer.Y2 = dom.Inner.Y2 + utils.GetIntSize(domStyle.Margin.Bottom)
 			}
 
 			imgData := ImageData{
@@ -202,14 +202,11 @@ CHILDREN:
 			dom.Container.X2 = pX2
 			dom.Inner.X2 = pX2
 			h := utils.GetIntSize(domStyle.Height)
-			if h == 0 {
-				h = 1
-			}
 			dom.Inner.Y2 = dom.Inner.Y1 + h - 1
 			dom.Container.Y2 = dom.Inner.Y2
 			dom.Outer.Y2 = dom.Container.Y2
-			if domStyle.MarginBottom != "" {
-				dom.Outer.Y2 += utils.GetIntSize(domStyle.MarginBottom)
+			if domStyle.Margin.Bottom != "" {
+				dom.Outer.Y2 += utils.GetIntSize(domStyle.Margin.Bottom)
 			}
 			endOffset.Y2 = dom.Outer.Y2
 			pY1 = dom.Outer.Y2 + 1
@@ -222,22 +219,22 @@ CHILDREN:
 			dom.Inner.Y2 = endOffset.Y2
 			dom.Inner.X2 = endOffset.X2
 			dom.Container.X2 = dom.Inner.X2
-			if domStyle.PaddingRight != "" {
-				dom.Container.X2 += utils.GetIntSize(domStyle.PaddingRight)
+			if domStyle.Padding.Right != "" {
+				dom.Container.X2 += utils.GetIntSize(domStyle.Padding.Right)
 			}
 
 			dom.Outer.X2 = dom.Container.X2
-			if domStyle.MarginRight != "" {
-				dom.Outer.X2 += utils.GetIntSize(domStyle.MarginRight)
+			if domStyle.Margin.Right != "" {
+				dom.Outer.X2 += utils.GetIntSize(domStyle.Margin.Right)
 			}
 
 			dom.Container.Y2 = endOffset.Y2
-			if domStyle.PaddingBottom != "" {
-				dom.Container.Y2 += utils.GetIntSize(domStyle.PaddingBottom)
+			if domStyle.Padding.Bottom != "" {
+				dom.Container.Y2 += utils.GetIntSize(domStyle.Padding.Bottom)
 			}
 			dom.Outer.Y2 = dom.Container.Y2
-			if domStyle.MarginBottom != "" {
-				dom.Outer.Y2 += utils.GetIntSize(domStyle.MarginBottom)
+			if domStyle.Margin.Bottom != "" {
+				dom.Outer.Y2 += utils.GetIntSize(domStyle.Margin.Bottom)
 			}
 			pX1 = dom.Outer.X2
 			endOffset.Y2 = dom.Outer.Y2
@@ -265,12 +262,12 @@ CHILDREN:
 			} else {
 				dom.Outer.X2 = pX2
 				dom.Container.X2 = pX2
-				if domStyle.MarginRight != "" {
-					dom.Container.X2 = pX2 - utils.GetIntSize(domStyle.MarginRight)
+				if domStyle.Margin.Right != "" {
+					dom.Container.X2 = pX2 - utils.GetIntSize(domStyle.Margin.Right)
 				}
 				dom.Inner.X2 = dom.Container.X2
-				if domStyle.PaddingRight != "" {
-					dom.Inner.X2 -= utils.GetIntSize(domStyle.PaddingRight)
+				if domStyle.Padding.Right != "" {
+					dom.Inner.X2 -= utils.GetIntSize(domStyle.Padding.Right)
 				}
 				par := append(parents, dom)
 				var child []*Dom
@@ -278,12 +275,12 @@ CHILDREN:
 				dom.Children = child
 				dom.Inner.Y2 = endOffset.Y2
 				dom.Container.Y2 = endOffset.Y2
-				if domStyle.PaddingBottom != "" {
-					dom.Container.Y2 += utils.GetIntSize(domStyle.PaddingBottom)
+				if domStyle.Padding.Bottom != "" {
+					dom.Container.Y2 += utils.GetIntSize(domStyle.Padding.Bottom)
 				}
 				dom.Outer.Y2 = dom.Container.Y2
-				if domStyle.MarginBottom != "" {
-					dom.Outer.Y2 += utils.GetIntSize(domStyle.MarginBottom)
+				if domStyle.Margin.Bottom != "" {
+					dom.Outer.Y2 += utils.GetIntSize(domStyle.Margin.Bottom)
 				}
 
 				endOffset.Y2 = dom.Outer.Y2
@@ -341,51 +338,17 @@ func GetDomStyle(dom *Dom, tagStyleList []*TagStyle) *TagStyle {
 			if style.Height != "" {
 				finalStyle.Height = style.Height
 			}
-			if style.Left != "" {
-				finalStyle.Left = style.Left
-			}
-			if style.Top != "" {
-				finalStyle.Top = style.Top
-			}
-			if style.Bottom != "" {
-				finalStyle.Bottom = style.Bottom
-			}
-			if style.Right != "" {
-				finalStyle.Right = style.Right
-			}
-			if style.MarginLeft != "" {
-				finalStyle.MarginLeft = style.MarginLeft
-			}
-			if style.MarginTop != "" {
-				finalStyle.MarginTop = style.MarginTop
-			}
-			if style.MarginRight != "" {
-				finalStyle.MarginRight = style.MarginRight
-			}
-			if style.MarginBottom != "" {
-				finalStyle.MarginBottom = style.MarginBottom
-			}
-			if style.PaddingLeft != "" {
-				finalStyle.PaddingLeft = style.PaddingLeft
-			}
-			if style.PaddingRight != "" {
-				finalStyle.PaddingRight = style.PaddingRight
-			}
-			if style.PaddingTop != "" {
-				finalStyle.PaddingTop = style.PaddingTop
-			}
-			if style.PaddingBottom != "" {
-				finalStyle.PaddingBottom = style.PaddingBottom
-			}
 			if style.Display != "" {
 				finalStyle.Display = style.Display
-			}
-			if style.BorderRadius != "" {
-				finalStyle.BorderRadius = style.BorderRadius
 			}
 			if style.Position != "" {
 				finalStyle.Position = style.Position
 			}
+
+			finalStyle.Offset = getSelectedPos(finalStyle.Offset, style.Offset)
+			finalStyle.Margin = getSelectedPos(finalStyle.Margin, style.Margin)
+			finalStyle.Padding = getSelectedPos(finalStyle.Padding, style.Padding)
+			finalStyle.BorderRadius = getSelectedPos(finalStyle.BorderRadius, style.BorderRadius)
 		}
 	}
 
@@ -411,4 +374,20 @@ func GetAttr(htmlNode *html.Node, attrKey string) string {
 		}
 	}
 	return ""
+}
+
+func getSelectedPos(oldPos Pos, selectedPos Pos) Pos {
+	if selectedPos.Left != "" {
+		oldPos.Left = selectedPos.Left
+	}
+	if selectedPos.Right != "" {
+		oldPos.Right = selectedPos.Right
+	}
+	if selectedPos.Top != "" {
+		oldPos.Top = selectedPos.Top
+	}
+	if selectedPos.Bottom != "" {
+		oldPos.Bottom = selectedPos.Bottom
+	}
+	return oldPos
 }

@@ -60,12 +60,16 @@ func DrawChildren(dst *image.RGBA, parent *dom.Dom, pStyle *dom.TagStyle, childr
 				if calcStyle.BackgroundColor == "" {
 					calcStyle.BackgroundColor = "#000000"
 				}
+				if calcStyle.Height == "" {
+					calcStyle.Height = "1px"
+				}
 				fallthrough
 			default:
 				if calcStyle.BackgroundColor != "" {
+					box := d.Container
 					borderColor := utils.GetColor(calcStyle.BackgroundColor)
-					for y := d.Inner.Y1; y <= d.Inner.Y2; y++ {
-						for x := d.Inner.X1; x <= d.Inner.X2; x++ {
+					for y := box.Y1; y <= box.Y2; y++ {
+						for x := box.X1; x <= box.X2; x++ {
 							dst.Set(x, y, borderColor)
 						}
 					}
@@ -83,7 +87,7 @@ func DrawChildren(dst *image.RGBA, parent *dom.Dom, pStyle *dom.TagStyle, childr
 				col = "#000000"
 			}
 			fontColor := utils.GetColor(col)
-			AddText(f, float64(fontSize), 72, dst, image.NewUniform(fontColor), d.TagData.(string), d.Inner.X1, d.Inner.Y1+fontSize)
+			AddText(f, float64(fontSize), 72, dst, image.NewUniform(fontColor), d.TagData.(string), d.Inner.X1, d.Inner.Y1+11*fontSize/12)
 		} else {
 			// Comments or other document type
 		}

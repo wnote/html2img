@@ -15,6 +15,13 @@ const CUT_SET_LIST = "\n\t\b "
 
 var FontMapping = make(map[string]*truetype.Font)
 
+type Pos struct {
+	Left   string
+	Top    string
+	Bottom string
+	Right  string
+}
+
 type TagStyle struct {
 	// Style selector
 	Selector string
@@ -30,21 +37,15 @@ type TagStyle struct {
 	BackgroundImage string
 	Width           string
 	Height          string
-	Left            string
-	Top             string
-	Bottom          string
-	Right           string
-	MarginLeft      string
-	MarginTop       string
-	MarginRight     string
-	MarginBottom    string
-	PaddingLeft     string
-	PaddingRight    string
-	PaddingTop      string
-	PaddingBottom   string
 	Display         string
-	BorderRadius    string
 	Position        string
+
+	BorderRadius Pos
+	Offset       Pos
+	Margin       Pos
+	Padding      Pos
+	BorderWidth  Pos
+	BorderColor  Pos
 }
 
 // 暂时不考虑优先级问题
@@ -109,33 +110,33 @@ func SetTagStyle(tagStyle *TagStyle, cStyle string) {
 	case "font-size":
 		tagStyle.FontSize = cssValue
 	case "left":
-		tagStyle.Left = cssValue
+		tagStyle.Offset.Left = cssValue
 	case "top":
-		tagStyle.Top = cssValue
+		tagStyle.Offset.Top = cssValue
 	case "bottom":
-		tagStyle.Bottom = cssValue
+		tagStyle.Offset.Bottom = cssValue
 	case "right":
-		tagStyle.Right = cssValue
+		tagStyle.Offset.Right = cssValue
 	case "margin-left":
-		tagStyle.MarginLeft = cssValue
+		tagStyle.Margin.Left = cssValue
 	case "margin-top":
-		tagStyle.MarginTop = cssValue
+		tagStyle.Margin.Top = cssValue
 	case "margin-right":
-		tagStyle.MarginRight = cssValue
+		tagStyle.Margin.Right = cssValue
 	case "margin-bottom":
-		tagStyle.MarginBottom = cssValue
+		tagStyle.Margin.Bottom = cssValue
 	case "padding-left":
-		tagStyle.PaddingLeft = cssValue
+		tagStyle.Padding.Left = cssValue
 	case "padding-right":
-		tagStyle.PaddingRight = cssValue
+		tagStyle.Padding.Right = cssValue
 	case "padding-top":
-		tagStyle.PaddingTop = cssValue
+		tagStyle.Padding.Top = cssValue
 	case "padding-bottom":
-		tagStyle.PaddingBottom = cssValue
+		tagStyle.Padding.Bottom = cssValue
 	case "display":
 		tagStyle.Display = cssValue
-	case "border-radius":
-		tagStyle.BorderRadius = cssValue
+	case "border-radius": //TODO
+		tagStyle.BorderRadius.Left = cssValue
 	case "line-height":
 		tagStyle.LineHeight = cssValue
 	case "font-family":
@@ -151,25 +152,25 @@ func SetTagStyle(tagStyle *TagStyle, cStyle string) {
 		attrList := strings.Split(cssValue, " ")
 		switch len(attrList) {
 		case 1:
-			tagStyle.PaddingTop = attrList[0]
-			tagStyle.PaddingBottom = attrList[0]
-			tagStyle.PaddingLeft = attrList[0]
-			tagStyle.PaddingRight = attrList[0]
+			tagStyle.Padding.Top = attrList[0]
+			tagStyle.Padding.Bottom = attrList[0]
+			tagStyle.Padding.Left = attrList[0]
+			tagStyle.Padding.Right = attrList[0]
 		case 2:
-			tagStyle.PaddingTop = attrList[0]
-			tagStyle.PaddingBottom = attrList[0]
-			tagStyle.PaddingLeft = attrList[1]
-			tagStyle.PaddingRight = attrList[1]
+			tagStyle.Padding.Top = attrList[0]
+			tagStyle.Padding.Bottom = attrList[0]
+			tagStyle.Padding.Left = attrList[1]
+			tagStyle.Padding.Right = attrList[1]
 		case 3:
-			tagStyle.PaddingTop = attrList[0]
-			tagStyle.PaddingLeft = attrList[1]
-			tagStyle.PaddingRight = attrList[1]
-			tagStyle.PaddingBottom = attrList[2]
+			tagStyle.Padding.Top = attrList[0]
+			tagStyle.Padding.Left = attrList[1]
+			tagStyle.Padding.Right = attrList[1]
+			tagStyle.Padding.Bottom = attrList[2]
 		case 4:
-			tagStyle.PaddingTop = attrList[0]
-			tagStyle.PaddingRight = attrList[1]
-			tagStyle.PaddingBottom = attrList[2]
-			tagStyle.PaddingLeft = attrList[3]
+			tagStyle.Padding.Top = attrList[0]
+			tagStyle.Padding.Right = attrList[1]
+			tagStyle.Padding.Bottom = attrList[2]
+			tagStyle.Padding.Left = attrList[3]
 		default:
 			panic(fmt.Sprintf("unsupported padding value %v", cStyle))
 		}
@@ -177,25 +178,25 @@ func SetTagStyle(tagStyle *TagStyle, cStyle string) {
 		attrList := strings.Split(cssValue, " ")
 		switch len(attrList) {
 		case 1:
-			tagStyle.MarginTop = attrList[0]
-			tagStyle.MarginBottom = attrList[0]
-			tagStyle.MarginLeft = attrList[0]
-			tagStyle.MarginRight = attrList[0]
+			tagStyle.Margin.Top = attrList[0]
+			tagStyle.Margin.Bottom = attrList[0]
+			tagStyle.Margin.Left = attrList[0]
+			tagStyle.Margin.Right = attrList[0]
 		case 2:
-			tagStyle.MarginTop = attrList[0]
-			tagStyle.MarginBottom = attrList[0]
-			tagStyle.MarginLeft = attrList[1]
-			tagStyle.MarginRight = attrList[1]
+			tagStyle.Margin.Top = attrList[0]
+			tagStyle.Margin.Bottom = attrList[0]
+			tagStyle.Margin.Left = attrList[1]
+			tagStyle.Margin.Right = attrList[1]
 		case 3:
-			tagStyle.MarginTop = attrList[0]
-			tagStyle.MarginLeft = attrList[1]
-			tagStyle.MarginRight = attrList[1]
-			tagStyle.MarginBottom = attrList[2]
+			tagStyle.Margin.Top = attrList[0]
+			tagStyle.Margin.Left = attrList[1]
+			tagStyle.Margin.Right = attrList[1]
+			tagStyle.Margin.Bottom = attrList[2]
 		case 4:
-			tagStyle.MarginTop = attrList[0]
-			tagStyle.MarginRight = attrList[1]
-			tagStyle.MarginBottom = attrList[2]
-			tagStyle.MarginLeft = attrList[3]
+			tagStyle.Margin.Top = attrList[0]
+			tagStyle.Margin.Right = attrList[1]
+			tagStyle.Margin.Bottom = attrList[2]
+			tagStyle.Margin.Left = attrList[3]
 		default:
 			panic(fmt.Sprintf("unsupported margin value %v", cStyle))
 		}

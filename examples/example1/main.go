@@ -32,6 +32,7 @@ func main() {
 	exportJson(htmlPath)
 }
 
+// For test
 func exportJson(htmlPath string) {
 	htmlBytes, err := ioutil.ReadFile(htmlPath)
 	if err != nil {
