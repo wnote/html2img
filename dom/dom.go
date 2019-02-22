@@ -196,19 +196,6 @@ CHILDREN:
 			dom.Outer = dom.Inner
 			dom.Container = dom.Inner
 			pY1 = dom.Outer.Y2 + 1
-		case "hr":
-			dom.Outer.X2 = pX2
-			dom.Container.X2 = pX2
-			dom.Inner.X2 = pX2
-			h := utils.GetIntSize(domStyle.Height)
-			dom.Inner.Y2 = dom.Inner.Y1 + h - 1
-			dom.Container.Y2 = dom.Inner.Y2
-			dom.Outer.Y2 = dom.Container.Y2
-			if domStyle.Margin.Bottom != "" {
-				dom.Outer.Y2 += utils.GetIntSize(domStyle.Margin.Bottom)
-			}
-			endOffset.Y2 = dom.Outer.Y2
-			pY1 = dom.Outer.Y2 + 1
 		case "span":
 			// TODO break new line
 			par := append(parents, dom)
@@ -259,6 +246,20 @@ CHILDREN:
 				ch = ch.NextSibling
 				continue CHILDREN
 			} else {
+				if dom.IsPositionAbsolute() {
+					left := utils.GetIntSize(domStyle.Offset.Left)
+					top := utils.GetIntSize(domStyle.Offset.Top)
+					width := utils.GetIntSize(domStyle.Width)
+					height := utils.GetIntSize(domStyle.Height)
+					dom.Outer.X1 = left
+					dom.Outer.X2 = left + width
+					dom.Outer.Y1 = top
+					dom.Outer.Y2 = top + height
+
+					dom.Container = dom.Outer
+					dom.Inner = dom.Outer
+					break
+				}
 				dom.Outer.X2 = pX2
 				dom.Container.X2 = pX2
 				if domStyle.Margin.Right != "" {
@@ -272,7 +273,7 @@ CHILDREN:
 				var child []*Dom
 				child, endOffset = GetChildren(ch, tagStyleList, par)
 				dom.Children = child
-				if len(child) == 0 {
+				if len(child) != 0 {
 					dom.Inner.Y2 = endOffset.Y2
 					dom.Container.Y2 = endOffset.Y2
 				} else {
@@ -282,8 +283,6 @@ CHILDREN:
 					}
 					dom.Container.Y2 = dom.Inner.Y2
 				}
-				fmt.Printf("%v ", dom.Inner)
-				fmt.Printf("%v %v", endOffset.X2, endOffset.Y2)
 
 				if domStyle.Padding.Bottom != "" {
 					dom.Container.Y2 += utils.GetIntSize(domStyle.Padding.Bottom)
@@ -296,7 +295,6 @@ CHILDREN:
 				endOffset.Y2 = dom.Outer.Y2
 				endOffset.X2 = dom.Outer.X2
 				pY1 = dom.Outer.Y2 + 1
-				fmt.Printf("%v %v=%v %v\n", ch.Data, ch.Attr[0].Key, ch.Attr[0].Val, pY1)
 			}
 		}
 		children = append(children, dom)
