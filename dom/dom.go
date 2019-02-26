@@ -226,23 +226,35 @@ CHILDREN:
 			endOffset.Y2 = dom.Outer.Y2
 		default:
 			if ch.Type == html.TextNode {
-				// TODO break new line
 				fontSize := utils.GetIntSize(domStyle.FontSize)
 				lineHeight := utils.GetIntSize(domStyle.LineHeight)
 				if fontSize > lineHeight {
 					lineHeight = fontSize
 				}
-				charWidth := utils.CalcCharacterPx(ch.Data, float64(fontSize))
-				dom.Inner.X2 = dom.Inner.X1 + int(charWidth)
-				dom.Inner.Y2 = dom.Inner.Y1 + lineHeight
 
-				dom.Container = dom.Inner
-				dom.Outer = dom.Inner
+				maxLineWidth := pX2 - dom.Inner.X1
+				multiTexts := utils.SplitMultiLineText(ch.Data, float64(fontSize), float64(maxLineWidth))
+				maxX2 := 0
+				maxY2 := dom.Inner.Y1
+				for _, text := range multiTexts {
+					newDom := *dom
 
-				endOffset.Y2 = dom.Outer.Y2
-				endOffset.X2 = dom.Outer.X2
+					charWidth := utils.CalcCharacterPx(text, float64(fontSize))
+					newDom.Inner.X2 = newDom.Inner.X1 + int(charWidth)
+					newDom.TagData = text
+					newDom.Inner.Y1 = maxY2
+					newDom.Inner.Y2 = maxY2 + lineHeight
+					newDom.Container = newDom.Inner
+					newDom.Outer = newDom.Inner
+					if maxX2 < newDom.Outer.X2 {
+						maxX2 = newDom.Outer.X2
+					}
+					maxY2 = newDom.Outer.Y2 + 1
+					children = append(children, &newDom)
+				}
 
-				children = append(children, dom)
+				endOffset.Y2 = maxY2
+				endOffset.X2 = maxX2
 				ch = ch.NextSibling
 				continue CHILDREN
 			} else {
