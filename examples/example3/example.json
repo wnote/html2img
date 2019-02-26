@@ -1,0 +1,346 @@
+{
+    "Outer": {
+        "X1": 0,
+        "Y1": 0,
+        "X2": 750,
+        "Y2": 419
+    },
+    "Container": {
+        "X1": 0,
+        "Y1": 0,
+        "X2": 750,
+        "Y2": 419
+    },
+    "Inwall": {
+        "X1": 0,
+        "Y1": 0,
+        "X2": 0,
+        "Y2": 0
+    },
+    "Inner": {
+        "X1": 0,
+        "Y1": 0,
+        "X2": 750,
+        "Y2": 419
+    },
+    "DomType": 3,
+    "TagName": "body",
+    "TagClass": "",
+    "TagData": null,
+    "TagStyle": {
+        "Selector": "body",
+        "Color": "",
+        "FontSize": "15px",
+        "LineHeight": "",
+        "FontFamily": "PingFang.ttf",
+        "BackgroundColor": "#ffffff",
+        "BackgroundImage": "",
+        "Width": "750px",
+        "Height": "1000px",
+        "Display": "",
+        "Position": "",
+        "BorderRadius": {
+            "Left": "",
+            "Top": "",
+            "Bottom": "",
+            "Right": ""
+        },
+        "Offset": {
+            "Left": "",
+            "Top": "",
+            "Bottom": "",
+            "Right": ""
+        },
+        "Margin": {
+            "Left": "",
+            "Top": "",
+            "Bottom": "",
+            "Right": ""
+        },
+        "Padding": {
+            "Left": "",
+            "Top": "",
+            "Bottom": "",
+            "Right": ""
+        },
+        "BorderWidth": {
+            "Left": "",
+            "Top": "",
+            "Bottom": "",
+            "Right": ""
+        },
+        "BorderColor": {
+            "Left": "",
+            "Top": "",
+            "Bottom": "",
+            "Right": ""
+        },
+        "BorderStyle": {
+            "Left": "",
+            "Top": "",
+            "Bottom": "",
+            "Right": ""
+        }
+    },
+    "Children": [
+        {
+            "Outer": {
+                "X1": 0,
+                "Y1": 0,
+                "X2": 750,
+                "Y2": 419
+            },
+            "Container": {
+                "X1": 28,
+                "Y1": 100,
+                "X2": 722,
+                "Y2": 319
+            },
+            "Inwall": {
+                "X1": 0,
+                "Y1": 0,
+                "X2": 0,
+                "Y2": 0
+            },
+            "Inner": {
+                "X1": 28,
+                "Y1": 100,
+                "X2": 722,
+                "Y2": 319
+            },
+            "DomType": 3,
+            "TagName": "div",
+            "TagClass": "content",
+            "TagData": null,
+            "TagStyle": {
+                "Selector": ".content",
+                "Color": "",
+                "FontSize": "15px",
+                "LineHeight": "",
+                "FontFamily": "PingFang.ttf",
+                "BackgroundColor": "",
+                "BackgroundImage": "",
+                "Width": "",
+                "Height": "",
+                "Display": "",
+                "Position": "",
+                "BorderRadius": {
+                    "Left": "",
+                    "Top": "",
+                    "Bottom": "",
+                    "Right": ""
+                },
+                "Offset": {
+                    "Left": "",
+                    "Top": "",
+                    "Bottom": "",
+                    "Right": ""
+                },
+                "Margin": {
+                    "Left": "28px",
+                    "Top": "100px",
+                    "Bottom": "100px",
+                    "Right": "28px"
+                },
+                "Padding": {
+                    "Left": "",
+                    "Top": "",
+                    "Bottom": "",
+                    "Right": ""
+                },
+                "BorderWidth": {
+                    "Left": "",
+                    "Top": "",
+                    "Bottom": "",
+                    "Right": ""
+                },
+                "BorderColor": {
+                    "Left": "",
+                    "Top": "",
+                    "Bottom": "",
+                    "Right": ""
+                },
+                "BorderStyle": {
+                    "Left": "",
+                    "Top": "",
+                    "Bottom": "",
+                    "Right": ""
+                }
+            },
+            "Children": [
+                {
+                    "Outer": {
+                        "X1": 28,
+                        "Y1": 100,
+                        "X2": 128,
+                        "Y2": 199
+                    },
+                    "Container": {
+                        "X1": 28,
+                        "Y1": 100,
+                        "X2": 128,
+                        "Y2": 199
+                    },
+                    "Inwall": {
+                        "X1": 0,
+                        "Y1": 0,
+                        "X2": 0,
+                        "Y2": 0
+                    },
+                    "Inner": {
+                        "X1": 28,
+                        "Y1": 100,
+                        "X2": 128,
+                        "Y2": 199
+                    },
+                    "DomType": 3,
+                    "TagName": "div",
+                    "TagClass": "circle",
+                    "TagData": null,
+                    "TagStyle": {
+                        "Selector": ".circle",
+                        "Color": "",
+                        "FontSize": "15px",
+                        "LineHeight": "",
+                        "FontFamily": "PingFang.ttf",
+                        "BackgroundColor": "",
+                        "BackgroundImage": "",
+                        "Width": "100px",
+                        "Height": "100px",
+                        "Display": "",
+                        "Position": "",
+                        "BorderRadius": {
+                            "Left": "50px",
+                            "Top": "50px",
+                            "Bottom": "50px",
+                            "Right": "50px"
+                        },
+                        "Offset": {
+                            "Left": "",
+                            "Top": "",
+                            "Bottom": "",
+                            "Right": ""
+                        },
+                        "Margin": {
+                            "Left": "",
+                            "Top": "",
+                            "Bottom": "",
+                            "Right": ""
+                        },
+                        "Padding": {
+                            "Left": "",
+                            "Top": "",
+                            "Bottom": "",
+                            "Right": ""
+                        },
+                        "BorderWidth": {
+                            "Left": "1px",
+                            "Top": "1px",
+                            "Bottom": "1px",
+                            "Right": "1px"
+                        },
+                        "BorderColor": {
+                            "Left": "#ccc",
+                            "Top": "#ccc",
+                            "Bottom": "#ccc",
+                            "Right": "#ccc"
+                        },
+                        "BorderStyle": {
+                            "Left": "solid",
+                            "Top": "solid",
+                            "Bottom": "solid",
+                            "Right": "solid"
+                        }
+                    },
+                    "Children": null
+                },
+                {
+                    "Outer": {
+                        "X1": 28,
+                        "Y1": 200,
+                        "X2": 128,
+                        "Y2": 319
+                    },
+                    "Container": {
+                        "X1": 28,
+                        "Y1": 220,
+                        "X2": 128,
+                        "Y2": 319
+                    },
+                    "Inwall": {
+                        "X1": 0,
+                        "Y1": 0,
+                        "X2": 0,
+                        "Y2": 0
+                    },
+                    "Inner": {
+                        "X1": 28,
+                        "Y1": 220,
+                        "X2": 128,
+                        "Y2": 319
+                    },
+                    "DomType": 3,
+                    "TagName": "div",
+                    "TagClass": "bold-circle",
+                    "TagData": null,
+                    "TagStyle": {
+                        "Selector": ".bold-circle",
+                        "Color": "",
+                        "FontSize": "15px",
+                        "LineHeight": "",
+                        "FontFamily": "PingFang.ttf",
+                        "BackgroundColor": "#5bb75b",
+                        "BackgroundImage": "",
+                        "Width": "100px",
+                        "Height": "100px",
+                        "Display": "",
+                        "Position": "",
+                        "BorderRadius": {
+                            "Left": "50px",
+                            "Top": "50px",
+                            "Bottom": "50px",
+                            "Right": "50px"
+                        },
+                        "Offset": {
+                            "Left": "",
+                            "Top": "",
+                            "Bottom": "",
+                            "Right": ""
+                        },
+                        "Margin": {
+                            "Left": "",
+                            "Top": "20px",
+                            "Bottom": "",
+                            "Right": ""
+                        },
+                        "Padding": {
+                            "Left": "",
+                            "Top": "",
+                            "Bottom": "",
+                            "Right": ""
+                        },
+                        "BorderWidth": {
+                            "Left": "",
+                            "Top": "",
+                            "Bottom": "",
+                            "Right": ""
+                        },
+                        "BorderColor": {
+                            "Left": "",
+                            "Top": "",
+                            "Bottom": "",
+                            "Right": ""
+                        },
+                        "BorderStyle": {
+                            "Left": "",
+                            "Top": "",
+                            "Bottom": "",
+                            "Right": ""
+                        }
+                    },
+                    "Children": null
+                }
+            ]
+        }
+    ]
+}
