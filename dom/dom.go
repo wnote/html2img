@@ -197,7 +197,6 @@ CHILDREN:
 			dom.Container = dom.Inner
 			pY1 = dom.Outer.Y2 + 1
 		case "span":
-			// TODO break new line
 			par := append(parents, dom)
 			var child []*Dom
 			child, endOffset = GetChildren(ch, tagStyleList, par)
@@ -231,14 +230,22 @@ CHILDREN:
 				if fontSize > lineHeight {
 					lineHeight = fontSize
 				}
-
-				maxLineWidth := pX2 - dom.Inner.X1
-				multiTexts := utils.SplitMultiLineText(ch.Data, float64(fontSize), float64(maxLineWidth))
+				var bParent *Dom
+				for i := len(parents) - 1; i >= 0; i-- {
+					p := parents[i]
+					if p.Inner.X2 > 0 {
+						bParent = p
+						break
+					}
+				}
+				multiTexts := utils.SplitMultiLineText(ch.Data, float64(fontSize), dom.Inner.X1, bParent.Inner.X2, bParent.Inner.X1)
 				maxX2 := 0
 				maxY2 := dom.Inner.Y1
-				for _, text := range multiTexts {
+				for idx, text := range multiTexts {
 					newDom := *dom
-
+					if idx > 0 {
+						newDom.Inner.X1 = bParent.Inner.X1
+					}
 					charWidth := utils.CalcCharacterPx(text, float64(fontSize))
 					newDom.Inner.X2 = newDom.Inner.X1 + int(charWidth)
 					newDom.TagData = text
@@ -252,7 +259,7 @@ CHILDREN:
 					maxY2 = newDom.Outer.Y2 + 1
 					children = append(children, &newDom)
 				}
-
+				pX1 = maxX2
 				endOffset.Y2 = maxY2
 				endOffset.X2 = maxX2
 				ch = ch.NextSibling

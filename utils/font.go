@@ -19,17 +19,21 @@ func CalCharacterLen(str string) float64 {
 	return sl
 }
 
-func SplitMultiLineText(text string, size float64, maxLineWidth float64) []string {
+func SplitMultiLineText(text string, size float64, domX1, parentX2, parentX1 int) []string {
+
+	firstLineWidth := float64(parentX2 - domX1)
+	maxLineWidth := float64(parentX2 - parentX1)
+
 	dpi := float64(72)
 	var multiTextGroupByLine []string
 	var tmpStr string
 	var tmpWidth float64
-	for _, value := range text {
+	for idx, value := range text {
 		subStr := string(value)
 		strWidth := (float64(CalCharacterLen(subStr)) * size * dpi / 72) / 3
 		tmpWidth += strWidth
 		tmpStr += subStr
-		if tmpWidth > maxLineWidth {
+		if (idx == 0 && tmpWidth > firstLineWidth) || (idx > 0 && tmpWidth > maxLineWidth) {
 			multiTextGroupByLine = append(multiTextGroupByLine, tmpStr)
 			tmpWidth = 0
 			tmpStr = ""
