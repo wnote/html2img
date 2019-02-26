@@ -8,6 +8,8 @@ var GConf = map[string]string{
 	"font_path": "",
 }
 
+var DPI = float64(72)
+
 func init() {
 	goPath, exist := os.LookupEnv("GOPATH")
 	if !exist {

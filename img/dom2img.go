@@ -7,24 +7,12 @@ import (
 	"image/jpeg"
 
 	"github.com/golang/freetype/truetype"
+	"github.com/wnote/html2img/conf"
 	"github.com/wnote/html2img/dom"
 	"github.com/wnote/html2img/utils"
 	"golang.org/x/image/font"
 	"golang.org/x/image/math/fixed"
 )
-
-type DrawCursor struct {
-	OffsetX int
-	OffsetY int
-
-	FromX int
-	EndX  int
-
-	FromY int
-	EndY  int
-
-	NeedNewLine bool
-}
 
 func BodyDom2Img(bodyDom *dom.Dom) ([]byte, error) {
 	bodyWidth := utils.GetIntSize(bodyDom.TagStyle.Width)
@@ -154,22 +142,21 @@ func DrawChildren(dst *image.RGBA, parent *dom.Dom, pStyle *dom.TagStyle, childr
 				col = "#000000"
 			}
 			fontColor := utils.GetColor(col)
-			AddText(f, float64(fontSize), 72, dst, image.NewUniform(fontColor), d.TagData.(string), d.Inner.X1, d.Inner.Y1+11*fontSize/12)
+			AddText(f, float64(fontSize), dst, image.NewUniform(fontColor), d.TagData.(string), d.Inner.X1, d.Inner.Y1+11*fontSize/12)
 		} else {
 			// Comments or other document type
 		}
 	}
 }
 
-func AddText(f *truetype.Font, size float64, dpi float64, dst *image.RGBA, src *image.Uniform, text string, x int, y int) {
-	h := font.HintingNone
+func AddText(f *truetype.Font, size float64, dst *image.RGBA, src *image.Uniform, text string, x int, y int) {
 	fd := &font.Drawer{
 		Dst: dst,
 		Src: src,
 		Face: truetype.NewFace(f, &truetype.Options{
 			Size:    size,
-			DPI:     dpi,
-			Hinting: h,
+			DPI:     conf.DPI,
+			Hinting: font.HintingNone,
 		}),
 	}
 
