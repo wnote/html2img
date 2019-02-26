@@ -189,7 +189,6 @@ CHILDREN:
 			}
 			dom.TagData = imgData
 
-			// break a new line
 			pX1 = parent.Inner.X1
 			endOffset.Y2 = dom.Inner.Y2
 
