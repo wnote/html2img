@@ -42,7 +42,9 @@ func GetIntSize(size string) int {
 
 func GetColor(colorStr string) color.Color {
 	escapeColor := strings.Replace(colorStr, "#", "", 1)
-	if len(escapeColor) < 6 {
+	if len(escapeColor) == 3 {
+		escapeColor = escapeColor[:1] + escapeColor[:1] + escapeColor[1:2] + escapeColor[1:2] + escapeColor[2:3] + escapeColor[2:3]
+	} else if len(escapeColor) < 6 {
 		panic(fmt.Sprintf("color err :%v", colorStr))
 	}
 	r, err := strconv.ParseInt(escapeColor[:2], 16, 32)
@@ -64,7 +66,7 @@ func GetColor(colorStr string) color.Color {
 			panic(fmt.Sprintf("color err :%v", colorStr))
 		}
 		if alp > 0 {
-			a = uint8(a)
+			a = uint8(alp)
 		}
 	}
 	return color.RGBA{

@@ -150,6 +150,7 @@ CHILDREN:
 		if domStyle.Padding.Top != "" {
 			dom.Inner.Y1 += utils.GetIntSize(domStyle.Padding.Top)
 		}
+
 		switch ch.Data {
 		case "img":
 			src := GetAttr(ch, "src")
@@ -278,8 +279,13 @@ CHILDREN:
 					dom.Inner = dom.Outer
 					break
 				}
-				dom.Outer.X2 = pX2
-				dom.Container.X2 = pX2
+				if width > 0 {
+					dom.Container.X2 = dom.Container.X1 + width
+					dom.Outer.X2 = dom.Container.X2
+				} else {
+					dom.Outer.X2 = pX2
+					dom.Container.X2 = pX2
+				}
 				if domStyle.Margin.Right != "" {
 					dom.Container.X2 = pX2 - utils.GetIntSize(domStyle.Margin.Right)
 				}

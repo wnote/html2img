@@ -22,7 +22,7 @@ func BodyDom2Img(bodyDom *dom.Dom) ([]byte, error) {
 		col := utils.GetColor(bodyDom.TagStyle.BackgroundColor)
 		draw.Draw(dst, dst.Bounds(), &image.Uniform{C: col}, image.ZP, draw.Src)
 	}
-	DrawChildren(dst, bodyDom, bodyDom.TagStyle, bodyDom.Children)
+	DrawChildren(dst, bodyDom.TagStyle, bodyDom.Children)
 
 	buf := &bytes.Buffer{}
 	err := jpeg.Encode(buf, dst, &jpeg.Options{
@@ -35,7 +35,7 @@ func BodyDom2Img(bodyDom *dom.Dom) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-func DrawChildren(dst *image.RGBA, parent *dom.Dom, pStyle *dom.TagStyle, children []*dom.Dom) {
+func DrawChildren(dst *image.RGBA, pStyle *dom.TagStyle, children []*dom.Dom) {
 	for _, d := range children {
 		calcStyle := dom.GetInheritStyle(pStyle, d.TagStyle)
 
@@ -62,6 +62,31 @@ func DrawChildren(dst *image.RGBA, parent *dom.Dom, pStyle *dom.TagStyle, childr
 						}
 					}
 				}
+				borderTopRadius := utils.GetIntSize(calcStyle.BorderRadius.Top)
+				borderRightRadius := utils.GetIntSize(calcStyle.BorderRadius.Right)
+				borderBottomRadius := utils.GetIntSize(calcStyle.BorderRadius.Bottom)
+				borderLeftRadius := utils.GetIntSize(calcStyle.BorderRadius.Left)
+				width := d.Container.X2 - d.Container.X1 + 1
+				height := d.Container.Y2 - d.Container.Y1 + 1
+				var halfSize int
+				if width > height {
+					halfSize = height / 2
+				} else {
+					halfSize = width / 2
+				}
+				if borderTopRadius > halfSize {
+					borderTopRadius = halfSize
+				}
+				if borderRightRadius > halfSize {
+					borderRightRadius = halfSize
+				}
+				if borderBottomRadius > halfSize {
+					borderBottomRadius = halfSize
+				}
+				if borderLeftRadius > halfSize {
+					borderLeftRadius = halfSize
+				}
+
 				if calcStyle.BorderStyle.Top != "" && calcStyle.BorderWidth.Top != "" && calcStyle.BorderColor.Top != "" {
 					borderWidth := utils.GetIntSize(calcStyle.BorderWidth.Top)
 					borderColor := utils.GetColor(calcStyle.BorderColor.Top)
@@ -69,7 +94,8 @@ func DrawChildren(dst *image.RGBA, parent *dom.Dom, pStyle *dom.TagStyle, childr
 					case "solid":
 						box := d.Container
 						for width := borderWidth - 1; width >= 0; width-- {
-							for x := box.X1; x <= box.X2; x++ {
+
+							for x := box.X1 + borderTopRadius; x <= box.X2-borderRightRadius; x++ {
 								dst.Set(x, d.Container.Y1+width, borderColor)
 							}
 						}
@@ -86,7 +112,7 @@ func DrawChildren(dst *image.RGBA, parent *dom.Dom, pStyle *dom.TagStyle, childr
 					case "solid":
 						box := d.Container
 						for width := borderWidth - 1; width >= 0; width-- {
-							for x := box.X1; x <= box.X2; x++ {
+							for x := box.X1 + borderLeftRadius; x <= box.X2-borderBottomRadius; x++ {
 								dst.Set(x, d.Container.Y2-width, borderColor)
 							}
 						}
@@ -103,7 +129,7 @@ func DrawChildren(dst *image.RGBA, parent *dom.Dom, pStyle *dom.TagStyle, childr
 					case "solid":
 						box := d.Container
 						for width := borderWidth - 1; width >= 0; width-- {
-							for y := box.Y1; y <= box.Y2; y++ {
+							for y := box.Y1 + borderTopRadius; y <= box.Y2-borderLeftRadius; y++ {
 								dst.Set(d.Container.X1+width, y, borderColor)
 							}
 						}
@@ -120,7 +146,7 @@ func DrawChildren(dst *image.RGBA, parent *dom.Dom, pStyle *dom.TagStyle, childr
 					case "solid":
 						box := d.Container
 						for width := borderWidth - 1; width >= 0; width-- {
-							for y := box.Y1; y <= box.Y2; y++ {
+							for y := box.Y1 + borderRightRadius; y <= box.Y2-borderBottomRadius; y++ {
 								dst.Set(d.Container.X2-width, y, borderColor)
 							}
 						}
@@ -130,7 +156,7 @@ func DrawChildren(dst *image.RGBA, parent *dom.Dom, pStyle *dom.TagStyle, childr
 					}
 				}
 			}
-			DrawChildren(dst, d, calcStyle, d.Children)
+			DrawChildren(dst, calcStyle, d.Children)
 		} else if d.DomType == dom.DOM_TYPE_TEXT {
 			f, exist := dom.FontMapping[calcStyle.FontFamily]
 			if !exist {
