@@ -3,8 +3,10 @@ package img
 import (
 	"bytes"
 	"image"
+	"image/color"
 	"image/draw"
 	"image/jpeg"
+	"math"
 
 	"github.com/golang/freetype/truetype"
 	"github.com/wnote/html2img/conf"
@@ -53,6 +55,10 @@ func DrawChildren(dst *image.RGBA, pStyle *dom.TagStyle, children []*dom.Dom) {
 				}
 				fallthrough
 			default:
+				borderTopRadius := utils.GetIntSize(calcStyle.BorderRadius.Top)
+				borderRightRadius := utils.GetIntSize(calcStyle.BorderRadius.Right)
+				borderBottomRadius := utils.GetIntSize(calcStyle.BorderRadius.Bottom)
+				borderLeftRadius := utils.GetIntSize(calcStyle.BorderRadius.Left)
 				if calcStyle.BackgroundColor != "" {
 					box := d.Container
 					borderColor := utils.GetColor(calcStyle.BackgroundColor)
@@ -61,11 +67,50 @@ func DrawChildren(dst *image.RGBA, pStyle *dom.TagStyle, children []*dom.Dom) {
 							dst.Set(x, y, borderColor)
 						}
 					}
+					col := color.RGBA{
+						R: uint8(255),
+						G: uint8(255),
+						B: uint8(255),
+						A: uint8(255),
+					}
+					for x := 0; x <= borderTopRadius; x++ {
+						for y := 0; y <= borderTopRadius; y++ {
+							if OutCircle(x, y, borderTopRadius) {
+								offsetX := borderTopRadius - x
+								offsetY := borderTopRadius - y
+								dst.Set(box.X1+offsetX, box.Y1+offsetY, col)
+							}
+						}
+					}
+					for x := 0; x <= borderRightRadius; x++ {
+						for y := 0; y <= borderRightRadius; y++ {
+							if OutCircle(x, y, borderRightRadius) {
+								offsetX := borderRightRadius - x
+								offsetY := borderRightRadius - y
+								dst.Set(box.X2-offsetX, box.Y1+offsetY, col)
+							}
+						}
+					}
+					for x := 0; x <= borderBottomRadius; x++ {
+						for y := 0; y <= borderBottomRadius; y++ {
+							if OutCircle(x, y, borderBottomRadius) {
+								offsetX := borderBottomRadius - x
+								offsetY := borderBottomRadius - y
+
+								dst.Set(box.X2-offsetX, box.Y2-offsetY, col)
+							}
+						}
+					}
+					for x := 0; x <= borderLeftRadius; x++ {
+						for y := 0; y <= borderLeftRadius; y++ {
+							if OutCircle(x, y, borderLeftRadius) {
+								offsetX := borderLeftRadius - x
+								offsetY := borderLeftRadius - y
+								dst.Set(box.X1+offsetX, box.Y2-offsetY, col)
+							}
+						}
+					}
 				}
-				borderTopRadius := utils.GetIntSize(calcStyle.BorderRadius.Top)
-				borderRightRadius := utils.GetIntSize(calcStyle.BorderRadius.Right)
-				borderBottomRadius := utils.GetIntSize(calcStyle.BorderRadius.Bottom)
-				borderLeftRadius := utils.GetIntSize(calcStyle.BorderRadius.Left)
 				width := d.Container.X2 - d.Container.X1 + 1
 				height := d.Container.Y2 - d.Container.Y1 + 1
 				var halfSize int
@@ -86,15 +131,19 @@ func DrawChildren(dst *image.RGBA, pStyle *dom.TagStyle, children []*dom.Dom) {
 				if borderLeftRadius > halfSize {
 					borderLeftRadius = halfSize
 				}
-
+				box := d.Container
 				if calcStyle.BorderStyle.Top != "" && calcStyle.BorderWidth.Top != "" && calcStyle.BorderColor.Top != "" {
 					borderWidth := utils.GetIntSize(calcStyle.BorderWidth.Top)
 					borderColor := utils.GetColor(calcStyle.BorderColor.Top)
 					switch calcStyle.BorderStyle.Top {
 					case "solid":
-						box := d.Container
 						for width := borderWidth - 1; width >= 0; width-- {
-
+							r := borderTopRadius - width
+							for xxOffset := r; xxOffset >= 0; xxOffset-- {
+								yyOffset := int(math.Sqrt(float64(r*r - xxOffset*xxOffset)))
+								dst.Set(d.Container.X1+r-int(xxOffset), box.Y1+r-yyOffset, borderColor)
+								dst.Set(d.Container.X1+r-int(yyOffset), box.Y1+r-xxOffset, borderColor)
+							}
 							for x := box.X1 + borderTopRadius; x <= box.X2-borderRightRadius; x++ {
 								dst.Set(x, d.Container.Y1+width, borderColor)
 							}
@@ -104,14 +153,39 @@ func DrawChildren(dst *image.RGBA, pStyle *dom.TagStyle, children []*dom.Dom) {
 
 					}
 				}
+				if calcStyle.BorderStyle.Right != "" && calcStyle.BorderWidth.Right != "" && calcStyle.BorderColor.Right != "" {
+					borderWidth := utils.GetIntSize(calcStyle.BorderWidth.Right)
+					borderColor := utils.GetColor(calcStyle.BorderColor.Right)
+					switch calcStyle.BorderStyle.Right {
+					case "solid":
+						for width := borderWidth - 1; width >= 0; width-- {
+							r := borderRightRadius - width
+							for xxOffset := r; xxOffset >= 0; xxOffset-- {
+								yyOffset := int(math.Sqrt(float64(r*r - xxOffset*xxOffset)))
+								dst.Set(d.Container.X2-r+int(xxOffset), box.Y1+r-yyOffset, borderColor)
+								dst.Set(d.Container.X2-r+int(yyOffset), box.Y1+r-xxOffset, borderColor)
+							}
+							for y := box.Y1 + borderRightRadius; y <= box.Y2-borderBottomRadius; y++ {
+								dst.Set(d.Container.X2-width, y, borderColor)
+							}
+						}
+					default:
+						panic("border-style " + calcStyle.BorderStyle.Top + " not support")
 
+					}
+				}
 				if calcStyle.BorderStyle.Bottom != "" && calcStyle.BorderWidth.Bottom != "" && calcStyle.BorderColor.Bottom != "" {
 					borderWidth := utils.GetIntSize(calcStyle.BorderWidth.Bottom)
 					borderColor := utils.GetColor(calcStyle.BorderColor.Bottom)
 					switch calcStyle.BorderStyle.Bottom {
 					case "solid":
-						box := d.Container
 						for width := borderWidth - 1; width >= 0; width-- {
+							r := borderBottomRadius - width
+							for xxOffset := r; xxOffset >= 0; xxOffset-- {
+								yyOffset := int(math.Sqrt(float64(r*r - xxOffset*xxOffset)))
+								dst.Set(d.Container.X2-r+int(xxOffset), box.Y2-r+yyOffset, borderColor)
+								dst.Set(d.Container.X2-r+int(yyOffset), box.Y2-r+xxOffset, borderColor)
+							}
 							for x := box.X1 + borderLeftRadius; x <= box.X2-borderBottomRadius; x++ {
 								dst.Set(x, d.Container.Y2-width, borderColor)
 							}
@@ -127,8 +201,13 @@ func DrawChildren(dst *image.RGBA, pStyle *dom.TagStyle, children []*dom.Dom) {
 					borderColor := utils.GetColor(calcStyle.BorderColor.Left)
 					switch calcStyle.BorderStyle.Left {
 					case "solid":
-						box := d.Container
 						for width := borderWidth - 1; width >= 0; width-- {
+							r := borderLeftRadius - width
+							for xxOffset := r; xxOffset >= 0; xxOffset-- {
+								yyOffset := int(math.Sqrt(float64(r*r - xxOffset*xxOffset)))
+								dst.Set(d.Container.X1+r-int(xxOffset), box.Y2-r+yyOffset, borderColor)
+								dst.Set(d.Container.X1+r-int(yyOffset), box.Y2-r+xxOffset, borderColor)
+							}
 							for y := box.Y1 + borderTopRadius; y <= box.Y2-borderLeftRadius; y++ {
 								dst.Set(d.Container.X1+width, y, borderColor)
 							}
@@ -139,22 +218,6 @@ func DrawChildren(dst *image.RGBA, pStyle *dom.TagStyle, children []*dom.Dom) {
 					}
 				}
 
-				if calcStyle.BorderStyle.Right != "" && calcStyle.BorderWidth.Right != "" && calcStyle.BorderColor.Right != "" {
-					borderWidth := utils.GetIntSize(calcStyle.BorderWidth.Right)
-					borderColor := utils.GetColor(calcStyle.BorderColor.Right)
-					switch calcStyle.BorderStyle.Right {
-					case "solid":
-						box := d.Container
-						for width := borderWidth - 1; width >= 0; width-- {
-							for y := box.Y1 + borderRightRadius; y <= box.Y2-borderBottomRadius; y++ {
-								dst.Set(d.Container.X2-width, y, borderColor)
-							}
-						}
-					default:
-						panic("border-style " + calcStyle.BorderStyle.Top + " not support")
-
-					}
-				}
 			}
 			DrawChildren(dst, calcStyle, d.Children)
 		} else if d.DomType == dom.DOM_TYPE_TEXT {
@@ -191,4 +254,11 @@ func AddText(f *truetype.Font, size float64, dst *image.RGBA, src *image.Uniform
 		Y: fixed.I(y),
 	}
 	fd.DrawString(text)
+}
+
+func OutCircle(x, y, radius int) bool {
+	xf := float64(x) + 0.5
+	yf := float64(y) + 0.5
+	rf := float64(radius)
+	return yf*yf+xf*xf > rf*rf
 }
