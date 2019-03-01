@@ -1,4 +1,4 @@
-package img
+package dom
 
 import (
 	"bytes"
@@ -10,13 +10,12 @@ import (
 
 	"github.com/golang/freetype/truetype"
 	"github.com/wnote/html2img/conf"
-	"github.com/wnote/html2img/dom"
 	"github.com/wnote/html2img/utils"
 	"golang.org/x/image/font"
 	"golang.org/x/image/math/fixed"
 )
 
-func BodyDom2Img(bodyDom *dom.Dom) ([]byte, error) {
+func BodyDom2Img(bodyDom *Dom) ([]byte, error) {
 	bodyWidth := utils.GetIntSize(bodyDom.TagStyle.Width)
 	bodyHeight := utils.GetIntSize(bodyDom.TagStyle.Height)
 	dst := image.NewRGBA(image.Rect(0, 0, bodyWidth, bodyHeight))
@@ -37,14 +36,14 @@ func BodyDom2Img(bodyDom *dom.Dom) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-func DrawChildren(dst *image.RGBA, pStyle *dom.TagStyle, children []*dom.Dom) {
+func DrawChildren(dst *image.RGBA, pStyle *TagStyle, children []*Dom) {
 	for _, d := range children {
-		calcStyle := dom.GetInheritStyle(pStyle, d.TagStyle)
+		calcStyle := GetInheritStyle(pStyle, d.TagStyle)
 
-		if d.DomType == dom.DOM_TYPE_ELEMENT {
+		if d.DomType == DOM_TYPE_ELEMENT {
 			switch d.TagName {
 			case "img":
-				imgData := d.TagData.(dom.ImageData)
+				imgData := d.TagData.(ImageData)
 				draw.Draw(dst, dst.Bounds().Add(image.Pt(d.Inner.X1, d.Inner.Y1)), imgData.Img, image.ZP, draw.Over)
 			case "hr":
 				if calcStyle.BackgroundColor == "" {
@@ -220,8 +219,8 @@ func DrawChildren(dst *image.RGBA, pStyle *dom.TagStyle, children []*dom.Dom) {
 
 			}
 			DrawChildren(dst, calcStyle, d.Children)
-		} else if d.DomType == dom.DOM_TYPE_TEXT {
-			f, exist := dom.FontMapping[calcStyle.FontFamily]
+		} else if d.DomType == DOM_TYPE_TEXT {
+			f, exist := FontMapping[calcStyle.FontFamily]
 			if !exist {
 				panic("Font-Family " + calcStyle.FontFamily + " not exist")
 			}

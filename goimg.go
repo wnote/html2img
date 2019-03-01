@@ -6,7 +6,6 @@ import (
 	"log"
 
 	"github.com/wnote/html2img/dom"
-	"github.com/wnote/html2img/img"
 	"golang.org/x/net/html"
 )
 
@@ -31,5 +30,5 @@ func Html2Img(htmlPath string) ([]byte, error) {
 
 	parsedBodyDom := dom.GetHtmlDom(body, tagStyleList)
 
-	return img.BodyDom2Img(parsedBodyDom)
+	return dom.BodyDom2Img(parsedBodyDom)
 }
