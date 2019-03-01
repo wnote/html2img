@@ -6,5 +6,5 @@
 
 ## 2, Get Start
 ```
-   go get github.com/wnote/worm
+   go get github.com/wnote/html2img
 ```
