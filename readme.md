@@ -10,6 +10,6 @@
 ```
 
 ## 3, Examples
-[Example1](examples/example1/example.html)
-[Example2](examples/example2/example.html)
-[Example3](examples/example3/example.html)
+[Example1](examples/example1/generated.jpg)
+[Example2](examples/example2/generated.jpg)
+[Example3](examples/example3/generated.jpg)
