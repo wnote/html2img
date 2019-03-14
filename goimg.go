@@ -29,5 +29,5 @@ func Html2Img(htmlPath string) ([]byte, error) {
 
 	parsedBodyDom := GetHtmlDom(body, tagStyleList)
 
-	return BodyDom2Img(parsedBodyDom)
+	return bodyDom2Img(parsedBodyDom)
 }

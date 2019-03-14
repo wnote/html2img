@@ -13,7 +13,7 @@ import (
 
 const CUT_SET_LIST = "\n\t\b "
 
-var FontMapping = make(map[string]*truetype.Font)
+var fontMapping = make(map[string]*truetype.Font)
 
 type Pos struct {
 	Left   string
@@ -67,7 +67,7 @@ func ParseStyle(styleList []string) []*TagStyle {
 					tagStyle = oldStyle
 				}
 				for _, cStyle := range classStyleList {
-					SetTagStyle(tagStyle, cStyle)
+					setTagStyle(tagStyle, cStyle)
 				}
 				tagStyleMap[selector] = tagStyle
 			}
@@ -82,7 +82,7 @@ func ParseStyle(styleList []string) []*TagStyle {
 	return tagStyleList
 }
 
-func SetTagStyle(tagStyle *TagStyle, cStyle string) {
+func setTagStyle(tagStyle *TagStyle, cStyle string) {
 	cStyle = strings.Trim(cStyle, CUT_SET_LIST)
 	if cStyle == "" {
 		return
@@ -314,7 +314,7 @@ func GetBodyStyle(htmlNode *html.Node) (body *html.Node, styleList []*html.Node)
 }
 
 // 暂时不考虑多个选择器问题
-func (p *TagStyle) Selected(currentDom *Dom) bool {
+func (p *TagStyle) selected(currentDom *Dom) bool {
 	selectors := strings.Split(p.Selector, " ")
 	// ignore parents
 	if len(selectors) > 1 {
@@ -349,7 +349,7 @@ func (p *TagStyle) Selected(currentDom *Dom) bool {
 }
 
 func initFontMap(fontFamily string) {
-	if _, exist := FontMapping[fontFamily]; exist {
+	if _, exist := fontMapping[fontFamily]; exist {
 		return
 	}
 	fontPath := conf.GConf["font_path"]
@@ -357,7 +357,7 @@ func initFontMap(fontFamily string) {
 	if err != nil {
 		panic(err)
 	}
-	FontMapping[fontFamily] = f
+	fontMapping[fontFamily] = f
 }
 
 func getFontFromFile(fontfile string) (*truetype.Font, error) {
@@ -372,7 +372,7 @@ func getFontFromFile(fontfile string) (*truetype.Font, error) {
 	return f, nil
 }
 
-func GetInheritStyle(pStyle *TagStyle, curStyle *TagStyle) *TagStyle {
+func getInheritStyle(pStyle *TagStyle, curStyle *TagStyle) *TagStyle {
 	if pStyle == nil {
 		pStyle = &TagStyle{}
 	}

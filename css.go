@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func GetIntPx(size string, pSize int) int {
+func getIntPx(size string, pSize int) int {
 	if size == "" {
 		return 0
 	}
@@ -36,11 +36,11 @@ func GetIntPx(size string, pSize int) int {
 	return 0
 }
 
-func GetIntSize(size string) int {
-	return GetIntPx(size, 0)
+func getIntSize(size string) int {
+	return getIntPx(size, 0)
 }
 
-func GetColor(colorStr string) color.Color {
+func getColor(colorStr string) color.Color {
 	escapeColor := strings.Replace(colorStr, "#", "", 1)
 	if len(escapeColor) == 3 {
 		escapeColor = escapeColor[:1] + escapeColor[:1] + escapeColor[1:2] + escapeColor[1:2] + escapeColor[2:3] + escapeColor[2:3]

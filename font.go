@@ -2,11 +2,11 @@ package html2img
 
 import "github.com/wnote/html2img/conf"
 
-func CalcCharacterPx(text string, fontSize float64) float64 {
-	return (float64(CalCharacterLen(text)) * fontSize * conf.DPI / 72) / 3
+func calcCharacterPx(text string, fontSize float64) float64 {
+	return (float64(calCharacterLen(text)) * fontSize * conf.DPI / 72) / 3
 }
 
-func CalCharacterLen(str string) float64 {
+func calCharacterLen(str string) float64 {
 	sl := 0.0
 	rs := []rune(str)
 	for _, r := range rs {
@@ -20,7 +20,7 @@ func CalCharacterLen(str string) float64 {
 	return sl
 }
 
-func SplitMultiLineText(text string, size float64, domX1, parentX2, parentX1 int) []string {
+func splitMultiLineText(text string, size float64, domX1, parentX2, parentX1 int) []string {
 	firstLineWidth := float64(parentX2-domX1) - size
 	maxLineWidth := float64(parentX2-parentX1) - size
 
@@ -29,7 +29,7 @@ func SplitMultiLineText(text string, size float64, domX1, parentX2, parentX1 int
 	var tmpWidth float64
 	for idx, value := range text {
 		subStr := string(value)
-		strWidth := (float64(CalCharacterLen(subStr)) * size * conf.DPI / 72) / 3
+		strWidth := (float64(calCharacterLen(subStr)) * size * conf.DPI / 72) / 3
 		tmpWidth += strWidth
 		tmpStr += subStr
 		if (idx == 0 && tmpWidth > firstLineWidth) || (idx > 0 && tmpWidth > maxLineWidth) {
