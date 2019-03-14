@@ -14,7 +14,11 @@ import (
 
 func OutputImg() {
 	htmlPath := "./example.html"
-	imgByte, err := html2img.Html2Img(htmlPath)
+	htmlBytes, err := ioutil.ReadFile(htmlPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	imgByte, err := html2img.Html2Img(htmlBytes)
 	if err != nil {
 		fmt.Println(err)
 		return

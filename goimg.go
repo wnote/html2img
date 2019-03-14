@@ -2,17 +2,12 @@ package html2img
 
 import (
 	"bytes"
-	"io/ioutil"
 	"log"
 
 	"golang.org/x/net/html"
 )
 
-func Html2Img(htmlPath string) ([]byte, error) {
-	htmlBytes, err := ioutil.ReadFile(htmlPath)
-	if err != nil {
-		log.Fatal(err)
-	}
+func Html2Img(htmlBytes []byte) ([]byte, error) {
 	htmlIoReader := bytes.NewReader(htmlBytes)
 	htmlNode, err := html.Parse(htmlIoReader)
 	if err != nil {
