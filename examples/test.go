@@ -31,7 +31,8 @@ func OutputImg() {
 }
 
 // For test
-func ExportJson(htmlPath string) {
+func ExportJson() {
+	htmlPath := "./example.html"
 	htmlBytes, err := ioutil.ReadFile(htmlPath)
 	if err != nil {
 		log.Fatal(err)
