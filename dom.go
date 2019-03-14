@@ -1,4 +1,4 @@
-package dom
+package html2img
 
 import (
 	"fmt"
@@ -11,7 +11,6 @@ import (
 	"strings"
 
 	"github.com/nfnt/resize"
-	"github.com/wnote/html2img/utils"
 	"golang.org/x/net/html"
 )
 
@@ -70,7 +69,7 @@ func GetHtmlDom(htmlNode *html.Node, tagStyleList []*TagStyle) *Dom {
 	bodyDom.Container.Y1 = 0
 	bodyDom.Inner.X1 = 0
 	bodyDom.Inner.Y1 = 0
-	bodyWidth := utils.GetIntSize(domStyle.Width)
+	bodyWidth := GetIntSize(domStyle.Width)
 	if bodyWidth == 0 {
 		panic("body with is required")
 	}
@@ -78,13 +77,13 @@ func GetHtmlDom(htmlNode *html.Node, tagStyleList []*TagStyle) *Dom {
 	bodyDom.Inner.X2 = bodyWidth
 
 	if domStyle.Padding.Left != "" {
-		bodyDom.Inner.X1 += utils.GetIntSize(domStyle.Padding.Left)
+		bodyDom.Inner.X1 += GetIntSize(domStyle.Padding.Left)
 	}
 	if domStyle.Padding.Top != "" {
-		bodyDom.Inner.Y1 += utils.GetIntSize(domStyle.Padding.Top)
+		bodyDom.Inner.Y1 += GetIntSize(domStyle.Padding.Top)
 	}
 	if domStyle.Padding.Right != "" {
-		bodyDom.Inner.X2 -= utils.GetIntSize(domStyle.Padding.Right)
+		bodyDom.Inner.X2 -= GetIntSize(domStyle.Padding.Right)
 	}
 
 	bodyDom.TagStyle = domStyle
@@ -93,7 +92,7 @@ func GetHtmlDom(htmlNode *html.Node, tagStyleList []*TagStyle) *Dom {
 	bodyDom.Inner.Y2 = endOffset.Y2
 	bodyDom.Container.Y2 = endOffset.Y2
 	if domStyle.Padding.Bottom != "" {
-		bodyDom.Inner.Y2 += utils.GetIntSize(domStyle.Padding.Bottom)
+		bodyDom.Inner.Y2 += GetIntSize(domStyle.Padding.Bottom)
 	}
 	bodyDom.Outer = bodyDom.Container
 	return bodyDom
@@ -126,8 +125,8 @@ CHILDREN:
 		domStyle := GetDomStyle(dom, tagStyleList)
 
 		calcStyle := GetInheritStyle(parent.TagStyle, domStyle)
-		width := utils.GetIntPx(calcStyle.Width, pWidth)
-		height := utils.GetIntSize(calcStyle.Height)
+		width := GetIntPx(calcStyle.Width, pWidth)
+		height := GetIntSize(calcStyle.Height)
 
 		dom.TagStyle = domStyle
 
@@ -136,19 +135,19 @@ CHILDREN:
 		dom.Outer.Y1 = pY1
 		dom.Container.Y1 = pY1
 		if domStyle.Margin.Left != "" {
-			dom.Container.X1 += utils.GetIntSize(domStyle.Margin.Left)
+			dom.Container.X1 += GetIntSize(domStyle.Margin.Left)
 		}
 		if domStyle.Margin.Top != "" {
-			dom.Container.Y1 += utils.GetIntSize(domStyle.Margin.Top)
+			dom.Container.Y1 += GetIntSize(domStyle.Margin.Top)
 		}
 
 		dom.Inner.X1 = dom.Container.X1
 		dom.Inner.Y1 = dom.Container.Y1
 		if domStyle.Padding.Left != "" {
-			dom.Inner.X1 += utils.GetIntSize(domStyle.Padding.Left)
+			dom.Inner.X1 += GetIntSize(domStyle.Padding.Left)
 		}
 		if domStyle.Padding.Top != "" {
-			dom.Inner.Y1 += utils.GetIntSize(domStyle.Padding.Top)
+			dom.Inner.Y1 += GetIntSize(domStyle.Padding.Top)
 		}
 
 		switch ch.Data {
@@ -178,10 +177,10 @@ CHILDREN:
 			dom.Inner.X2 = dom.Inner.X1 + width - 1
 			dom.Inner.Y2 = dom.Inner.Y1 + height - 1
 			if domStyle.Margin.Right != "" {
-				dom.Outer.X2 = dom.Inner.X2 + utils.GetIntSize(domStyle.Margin.Right)
+				dom.Outer.X2 = dom.Inner.X2 + GetIntSize(domStyle.Margin.Right)
 			}
 			if domStyle.Margin.Bottom != "" {
-				dom.Outer.Y2 = dom.Inner.Y2 + utils.GetIntSize(domStyle.Margin.Bottom)
+				dom.Outer.Y2 = dom.Inner.Y2 + GetIntSize(domStyle.Margin.Bottom)
 			}
 
 			imgData := ImageData{
@@ -205,28 +204,28 @@ CHILDREN:
 			dom.Inner.X2 = endOffset.X2
 			dom.Container.X2 = dom.Inner.X2
 			if domStyle.Padding.Right != "" {
-				dom.Container.X2 += utils.GetIntSize(domStyle.Padding.Right)
+				dom.Container.X2 += GetIntSize(domStyle.Padding.Right)
 			}
 
 			dom.Outer.X2 = dom.Container.X2
 			if domStyle.Margin.Right != "" {
-				dom.Outer.X2 += utils.GetIntSize(domStyle.Margin.Right)
+				dom.Outer.X2 += GetIntSize(domStyle.Margin.Right)
 			}
 
 			dom.Container.Y2 = endOffset.Y2
 			if domStyle.Padding.Bottom != "" {
-				dom.Container.Y2 += utils.GetIntSize(domStyle.Padding.Bottom)
+				dom.Container.Y2 += GetIntSize(domStyle.Padding.Bottom)
 			}
 			dom.Outer.Y2 = dom.Container.Y2
 			if domStyle.Margin.Bottom != "" {
-				dom.Outer.Y2 += utils.GetIntSize(domStyle.Margin.Bottom)
+				dom.Outer.Y2 += GetIntSize(domStyle.Margin.Bottom)
 			}
 			pX1 = dom.Outer.X2
 			endOffset.Y2 = dom.Outer.Y2
 		default:
 			if ch.Type == html.TextNode {
-				fontSize := utils.GetIntSize(domStyle.FontSize)
-				lineHeight := utils.GetIntSize(domStyle.LineHeight)
+				fontSize := GetIntSize(domStyle.FontSize)
+				lineHeight := GetIntSize(domStyle.LineHeight)
 				if fontSize > lineHeight {
 					lineHeight = fontSize
 				}
@@ -238,7 +237,7 @@ CHILDREN:
 						break
 					}
 				}
-				multiTexts := utils.SplitMultiLineText(ch.Data, float64(fontSize), dom.Inner.X1, bParent.Inner.X2, bParent.Inner.X1)
+				multiTexts := SplitMultiLineText(ch.Data, float64(fontSize), dom.Inner.X1, bParent.Inner.X2, bParent.Inner.X1)
 				maxX2 := 0
 				maxY2 := dom.Inner.Y1
 				for idx, text := range multiTexts {
@@ -246,7 +245,7 @@ CHILDREN:
 					if idx > 0 {
 						newDom.Inner.X1 = bParent.Inner.X1
 					}
-					charWidth := utils.CalcCharacterPx(text, float64(fontSize))
+					charWidth := CalcCharacterPx(text, float64(fontSize))
 					newDom.Inner.X2 = newDom.Inner.X1 + int(charWidth)
 					newDom.TagData = text
 					newDom.Inner.Y1 = maxY2
@@ -266,10 +265,10 @@ CHILDREN:
 				continue CHILDREN
 			} else {
 				if dom.IsPositionAbsolute() {
-					left := utils.GetIntSize(domStyle.Offset.Left)
-					top := utils.GetIntSize(domStyle.Offset.Top)
-					width := utils.GetIntSize(domStyle.Width)
-					height := utils.GetIntSize(domStyle.Height)
+					left := GetIntSize(domStyle.Offset.Left)
+					top := GetIntSize(domStyle.Offset.Top)
+					width := GetIntSize(domStyle.Width)
+					height := GetIntSize(domStyle.Height)
 					dom.Outer.X1 = left
 					dom.Outer.X2 = left + width
 					dom.Outer.Y1 = top
@@ -287,11 +286,11 @@ CHILDREN:
 					dom.Container.X2 = pX2
 				}
 				if domStyle.Margin.Right != "" {
-					dom.Container.X2 = pX2 - utils.GetIntSize(domStyle.Margin.Right)
+					dom.Container.X2 = pX2 - GetIntSize(domStyle.Margin.Right)
 				}
 				dom.Inner.X2 = dom.Container.X2
 				if domStyle.Padding.Right != "" {
-					dom.Inner.X2 -= utils.GetIntSize(domStyle.Padding.Right)
+					dom.Inner.X2 -= GetIntSize(domStyle.Padding.Right)
 				}
 				par := append(parents, dom)
 				var child []*Dom
@@ -303,17 +302,17 @@ CHILDREN:
 				} else {
 					dom.Inner.Y2 = dom.Inner.Y1
 					if domStyle.Height != "" {
-						dom.Inner.Y2 += utils.GetIntSize(domStyle.Height) - 1
+						dom.Inner.Y2 += GetIntSize(domStyle.Height) - 1
 					}
 					dom.Container.Y2 = dom.Inner.Y2
 				}
 
 				if domStyle.Padding.Bottom != "" {
-					dom.Container.Y2 += utils.GetIntSize(domStyle.Padding.Bottom)
+					dom.Container.Y2 += GetIntSize(domStyle.Padding.Bottom)
 				}
 				dom.Outer.Y2 = dom.Container.Y2
 				if domStyle.Margin.Bottom != "" {
-					dom.Outer.Y2 += utils.GetIntSize(domStyle.Margin.Bottom)
+					dom.Outer.Y2 += GetIntSize(domStyle.Margin.Bottom)
 				}
 
 				endOffset.Y2 = dom.Outer.Y2

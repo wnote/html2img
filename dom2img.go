@@ -1,4 +1,4 @@
-package dom
+package html2img
 
 import (
 	"bytes"
@@ -10,17 +10,16 @@ import (
 
 	"github.com/golang/freetype/truetype"
 	"github.com/wnote/html2img/conf"
-	"github.com/wnote/html2img/utils"
 	"golang.org/x/image/font"
 	"golang.org/x/image/math/fixed"
 )
 
 func BodyDom2Img(bodyDom *Dom) ([]byte, error) {
-	bodyWidth := utils.GetIntSize(bodyDom.TagStyle.Width)
-	bodyHeight := utils.GetIntSize(bodyDom.TagStyle.Height)
+	bodyWidth := GetIntSize(bodyDom.TagStyle.Width)
+	bodyHeight := GetIntSize(bodyDom.TagStyle.Height)
 	dst := image.NewRGBA(image.Rect(0, 0, bodyWidth, bodyHeight))
 	if bodyDom.TagStyle.BackgroundColor != "" {
-		col := utils.GetColor(bodyDom.TagStyle.BackgroundColor)
+		col := GetColor(bodyDom.TagStyle.BackgroundColor)
 		draw.Draw(dst, dst.Bounds(), &image.Uniform{C: col}, image.ZP, draw.Src)
 	}
 	DrawChildren(dst, bodyDom.TagStyle, bodyDom.Children)
@@ -49,7 +48,7 @@ func DrawChildren(dst *image.RGBA, pStyle *TagStyle, children []*Dom) {
 			default:
 				box := d.Container
 				if calcStyle.BackgroundColor != "" {
-					borderColor := utils.GetColor(calcStyle.BackgroundColor)
+					borderColor := GetColor(calcStyle.BackgroundColor)
 					for y := box.Y1; y <= box.Y2; y++ {
 						for x := box.X1; x <= box.X2; x++ {
 							dst.Set(x, y, borderColor)
@@ -58,10 +57,10 @@ func DrawChildren(dst *image.RGBA, pStyle *TagStyle, children []*Dom) {
 				}
 				DrawBoxRadius(dst, box, calcStyle, pStyle)
 
-				borderTopRadius := utils.GetIntSize(calcStyle.BorderRadius.Top)
-				borderRightRadius := utils.GetIntSize(calcStyle.BorderRadius.Right)
-				borderBottomRadius := utils.GetIntSize(calcStyle.BorderRadius.Bottom)
-				borderLeftRadius := utils.GetIntSize(calcStyle.BorderRadius.Left)
+				borderTopRadius := GetIntSize(calcStyle.BorderRadius.Top)
+				borderRightRadius := GetIntSize(calcStyle.BorderRadius.Right)
+				borderBottomRadius := GetIntSize(calcStyle.BorderRadius.Bottom)
+				borderLeftRadius := GetIntSize(calcStyle.BorderRadius.Left)
 
 				width := d.Container.X2 - d.Container.X1 + 1
 				height := d.Container.Y2 - d.Container.Y1 + 1
@@ -84,8 +83,8 @@ func DrawChildren(dst *image.RGBA, pStyle *TagStyle, children []*Dom) {
 					borderLeftRadius = halfSize
 				}
 				if calcStyle.BorderStyle.Top != "" && calcStyle.BorderWidth.Top != "" && calcStyle.BorderColor.Top != "" {
-					borderWidth := utils.GetIntSize(calcStyle.BorderWidth.Top)
-					borderColor := utils.GetColor(calcStyle.BorderColor.Top)
+					borderWidth := GetIntSize(calcStyle.BorderWidth.Top)
+					borderColor := GetColor(calcStyle.BorderColor.Top)
 					switch calcStyle.BorderStyle.Top {
 					case "solid":
 						for width := borderWidth - 1; width >= 0; width-- {
@@ -105,8 +104,8 @@ func DrawChildren(dst *image.RGBA, pStyle *TagStyle, children []*Dom) {
 					}
 				}
 				if calcStyle.BorderStyle.Right != "" && calcStyle.BorderWidth.Right != "" && calcStyle.BorderColor.Right != "" {
-					borderWidth := utils.GetIntSize(calcStyle.BorderWidth.Right)
-					borderColor := utils.GetColor(calcStyle.BorderColor.Right)
+					borderWidth := GetIntSize(calcStyle.BorderWidth.Right)
+					borderColor := GetColor(calcStyle.BorderColor.Right)
 					switch calcStyle.BorderStyle.Right {
 					case "solid":
 						for width := borderWidth - 1; width >= 0; width-- {
@@ -126,8 +125,8 @@ func DrawChildren(dst *image.RGBA, pStyle *TagStyle, children []*Dom) {
 					}
 				}
 				if calcStyle.BorderStyle.Bottom != "" && calcStyle.BorderWidth.Bottom != "" && calcStyle.BorderColor.Bottom != "" {
-					borderWidth := utils.GetIntSize(calcStyle.BorderWidth.Bottom)
-					borderColor := utils.GetColor(calcStyle.BorderColor.Bottom)
+					borderWidth := GetIntSize(calcStyle.BorderWidth.Bottom)
+					borderColor := GetColor(calcStyle.BorderColor.Bottom)
 					switch calcStyle.BorderStyle.Bottom {
 					case "solid":
 						for width := borderWidth - 1; width >= 0; width-- {
@@ -148,8 +147,8 @@ func DrawChildren(dst *image.RGBA, pStyle *TagStyle, children []*Dom) {
 				}
 
 				if calcStyle.BorderStyle.Left != "" && calcStyle.BorderWidth.Left != "" && calcStyle.BorderColor.Left != "" {
-					borderWidth := utils.GetIntSize(calcStyle.BorderWidth.Left)
-					borderColor := utils.GetColor(calcStyle.BorderColor.Left)
+					borderWidth := GetIntSize(calcStyle.BorderWidth.Left)
+					borderColor := GetColor(calcStyle.BorderColor.Left)
 					switch calcStyle.BorderStyle.Left {
 					case "solid":
 						for width := borderWidth - 1; width >= 0; width-- {
@@ -176,12 +175,12 @@ func DrawChildren(dst *image.RGBA, pStyle *TagStyle, children []*Dom) {
 			if !exist {
 				panic("Font-Family " + calcStyle.FontFamily + " not exist")
 			}
-			fontSize := utils.GetIntSize(calcStyle.FontSize)
+			fontSize := GetIntSize(calcStyle.FontSize)
 			col := calcStyle.Color
 			if col == "" {
 				col = "#000000"
 			}
-			fontColor := utils.GetColor(col)
+			fontColor := GetColor(col)
 			AddText(f, float64(fontSize), dst, image.NewUniform(fontColor), d.TagData.(string), d.Inner.X1, d.Inner.Y1+11*fontSize/12)
 		} else {
 			// Comments or other document type
@@ -215,10 +214,10 @@ func OutCircle(x, y, radius int) bool {
 }
 
 func DrawBoxRadius(dst *image.RGBA, box Rectangle, cStyle *TagStyle, pStyle *TagStyle) {
-	borderTopRadius := utils.GetIntSize(cStyle.BorderRadius.Top)
-	borderRightRadius := utils.GetIntSize(cStyle.BorderRadius.Right)
-	borderBottomRadius := utils.GetIntSize(cStyle.BorderRadius.Bottom)
-	borderLeftRadius := utils.GetIntSize(cStyle.BorderRadius.Left)
+	borderTopRadius := GetIntSize(cStyle.BorderRadius.Top)
+	borderRightRadius := GetIntSize(cStyle.BorderRadius.Right)
+	borderBottomRadius := GetIntSize(cStyle.BorderRadius.Bottom)
+	borderLeftRadius := GetIntSize(cStyle.BorderRadius.Left)
 
 	width := box.X2 - box.X1 + 1
 	height := box.Y2 - box.Y1 + 1
@@ -249,7 +248,7 @@ func DrawBoxRadius(dst *image.RGBA, box Rectangle, cStyle *TagStyle, pStyle *Tag
 	}
 
 	if pStyle.BackgroundColor != "" {
-		pColor := utils.GetColor(pStyle.BackgroundColor)
+		pColor := GetColor(pStyle.BackgroundColor)
 		r, g, b, a := pColor.RGBA()
 		col = color.RGBA{
 			R: uint8(r),

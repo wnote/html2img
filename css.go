@@ -1,4 +1,4 @@
-package utils
+package html2img
 
 import (
 	"fmt"

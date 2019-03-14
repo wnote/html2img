@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"log"
 
-	"github.com/wnote/html2img/dom"
 	"golang.org/x/net/html"
 )
 
@@ -20,15 +19,15 @@ func Html2Img(htmlPath string) ([]byte, error) {
 		log.Fatal(err)
 	}
 
-	body, styleList := dom.GetBodyStyle(htmlNode)
+	body, styleList := GetBodyStyle(htmlNode)
 
 	var styleString []string
 	for _, value := range styleList {
 		styleString = append(styleString, value.FirstChild.Data)
 	}
-	tagStyleList := dom.ParseStyle(styleString)
+	tagStyleList := ParseStyle(styleString)
 
-	parsedBodyDom := dom.GetHtmlDom(body, tagStyleList)
+	parsedBodyDom := GetHtmlDom(body, tagStyleList)
 
-	return dom.BodyDom2Img(parsedBodyDom)
+	return BodyDom2Img(parsedBodyDom)
 }

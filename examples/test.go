@@ -9,7 +9,6 @@ import (
 	"os"
 
 	"github.com/wnote/html2img"
-	"github.com/wnote/html2img/dom"
 	"golang.org/x/net/html"
 )
 
@@ -43,15 +42,15 @@ func ExportJson() {
 		log.Fatal(err)
 	}
 
-	body, styleList := dom.GetBodyStyle(htmlNode)
+	body, styleList := html2img.GetBodyStyle(htmlNode)
 
 	var styleString []string
 	for _, value := range styleList {
 		styleString = append(styleString, value.FirstChild.Data)
 	}
-	tagStyleList := dom.ParseStyle(styleString)
+	tagStyleList := html2img.ParseStyle(styleString)
 
-	parsedBodyDom := dom.GetHtmlDom(body, tagStyleList)
+	parsedBodyDom := html2img.GetHtmlDom(body, tagStyleList)
 
 	jsonStr, err := json.MarshalIndent(parsedBodyDom, "", "    ")
 	if err != nil {
