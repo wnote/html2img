@@ -1,11 +1,14 @@
 ## html2img 中文文档
 
-### 概述
+### 一、概述
+ - 将HTML+css转换为图片的golang库
+ - 仅支持部分标签与样式
+
 ```go
 package html2img
 
 ```
-### 支持的样式
+### 二、支持的样式
 + background-color
 + background-image
 + width
