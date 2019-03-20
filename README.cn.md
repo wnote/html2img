@@ -19,10 +19,12 @@ package html2img
 + top
 + bottom
 + right
++ margin
 + margin-left
 + margin-top
 + margin-right
 + margin-bottom
++ padding
 + padding-left
 + padding-right
 + padding-top

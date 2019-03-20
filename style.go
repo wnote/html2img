@@ -35,6 +35,7 @@ type TagStyle struct {
 	// Not Inheritable
 	BackgroundColor string
 	BackgroundImage string
+	ForegroundImage string
 	Width           string
 	Height          string
 	Display         string

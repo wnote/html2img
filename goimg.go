@@ -7,7 +7,7 @@ import (
 	"golang.org/x/net/html"
 )
 
-func Html2Img(htmlBytes []byte) ([]byte, error) {
+func Html2Img(htmlBytes []byte, bodyWidth int) ([]byte, error) {
 	htmlIoReader := bytes.NewReader(htmlBytes)
 	htmlNode, err := html.Parse(htmlIoReader)
 	if err != nil {
@@ -22,7 +22,7 @@ func Html2Img(htmlBytes []byte) ([]byte, error) {
 	}
 	tagStyleList := ParseStyle(styleString)
 
-	parsedBodyDom := GetHtmlDom(body, tagStyleList)
+	parsedBodyDom := GetHtmlDom(body, tagStyleList, bodyWidth)
 
 	return bodyDom2Img(parsedBodyDom)
 }

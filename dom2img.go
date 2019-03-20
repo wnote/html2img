@@ -2,6 +2,7 @@ package html2img
 
 import (
 	"bytes"
+	"fmt"
 	"image"
 	"image/color"
 	"image/draw"
@@ -173,7 +174,11 @@ func drawChildren(dst *image.RGBA, pStyle *TagStyle, children []*Dom) {
 		} else if d.DomType == DOM_TYPE_TEXT {
 			f, exist := fontMapping[calcStyle.FontFamily]
 			if !exist {
-				panic("Font-Family " + calcStyle.FontFamily + " not exist")
+				fmt.Println("Font-Family " + calcStyle.FontFamily + " not exist")
+				for _, fon := range fontMapping {
+					f = fon
+					break
+				}
 			}
 			fontSize := getIntSize(calcStyle.FontSize)
 			col := calcStyle.Color

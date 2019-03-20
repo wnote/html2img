@@ -18,7 +18,7 @@ func OutputImg() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	imgByte, err := html2img.Html2Img(htmlBytes)
+	imgByte, err := html2img.Html2Img(htmlBytes, 0)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -54,7 +54,7 @@ func ExportJson() {
 	}
 	tagStyleList := html2img.ParseStyle(styleString)
 
-	parsedBodyDom := html2img.GetHtmlDom(body, tagStyleList)
+	parsedBodyDom := html2img.GetHtmlDom(body, tagStyleList, 0)
 
 	jsonStr, err := json.MarshalIndent(parsedBodyDom, "", "    ")
 	if err != nil {

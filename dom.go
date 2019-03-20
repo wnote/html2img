@@ -61,15 +61,17 @@ func (d *Dom) isAutoHeight() bool {
 	return d.TagStyle.Height == "auto" || d.TagStyle.Height == ""
 }
 
-func GetHtmlDom(htmlNode *html.Node, tagStyleList []*TagStyle) *Dom {
+func GetHtmlDom(htmlNode *html.Node, tagStyleList []*TagStyle, bodyWidth int) *Dom {
 	bodyDom := &Dom{}
 	setDomAttr(bodyDom, htmlNode)
 	domStyle := getDomStyle(bodyDom, tagStyleList)
-	bodyDom.Container.X1 = 0
-	bodyDom.Container.Y1 = 0
-	bodyDom.Inner.X1 = 0
-	bodyDom.Inner.Y1 = 0
-	bodyWidth := getIntSize(domStyle.Width)
+	bodyDom.Container.X1 = 1
+	bodyDom.Container.Y1 = 1
+	bodyDom.Inner.X1 = 1
+	bodyDom.Inner.Y1 = 1
+	if bodyWidth == 0 {
+		bodyWidth = getIntSize(domStyle.Width)
+	}
 	if bodyWidth == 0 {
 		panic("body with is required")
 	}
@@ -270,16 +272,16 @@ CHILDREN:
 					width := getIntSize(domStyle.Width)
 					height := getIntSize(domStyle.Height)
 					dom.Outer.X1 = left
-					dom.Outer.X2 = left + width
+					dom.Outer.X2 = left + width - 1
 					dom.Outer.Y1 = top
-					dom.Outer.Y2 = top + height
+					dom.Outer.Y2 = top + height - 1
 
 					dom.Container = dom.Outer
 					dom.Inner = dom.Outer
 					break
 				}
 				if width > 0 {
-					dom.Container.X2 = dom.Container.X1 + width
+					dom.Container.X2 = dom.Container.X1 + width - 1
 					dom.Outer.X2 = dom.Container.X2
 				} else {
 					dom.Outer.X2 = pX2
